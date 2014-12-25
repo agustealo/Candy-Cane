@@ -1,4 +1,4 @@
-# CAndy Cane for WordPress
+# Candy Cane for WordPress
 
 Candy Cane for WordPress, was built using Faoundation framework with the exceptional capabilities of [ZURB's Foundation Framework](http://foundation.zurb.com/) and [HTML5 Boilerplate](http://html5boilerplate.com/).
 
@@ -63,7 +63,8 @@ You can manage Orbit's options through app.js (don't worry, theres an options pa
 + Follow [Agustealo on Twitter](http://www.twitter.com/agustealo)
 + Follow [Agustealo on FaceBook](https://www.facebook.com/pages/Agustealo/183441298351569?ref=hl)
 + Follow [Agustealo on Google +](https://plus.google.com/u/0/+AgustealoJohnson)
-+ View [Agustealo's Website](http://www.agustealo.com)
++ Blog [Agustealo's Website](http://www.agustealo.com)
++ Dev's [Agustealo's Website](agustealo.github.io)
 
 **ZURB**
 
