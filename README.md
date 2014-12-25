@@ -4,6 +4,7 @@ Candy Cane for WordPress, was built using Faoundation framework with the excepti
 
 ## Demonstration
 
+You can view Candy Cane for WordPress online at this address: [http://demo.agustealo.com/wordpress](http://fwp.drewsymo.com)
 You can view Foundation, for WordPress (FWP) online at this address: [http://fwp.drewsymo.com](http://fwp.drewsymo.com)
 ## Features
 
