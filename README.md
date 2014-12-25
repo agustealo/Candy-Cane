@@ -1,32 +1,22 @@
 # Foundation, for WordPress
 
-Foundation, for WordPress, is a blank starter theme with the exceptional capabilities of [ZURB's Foundation Framework](http://foundation.zurb.com/) and [HTML5 Boilerplate](http://html5boilerplate.com/).
-
-As a neat-freak designer, it's sometimes intimidating and frustrating looking at a WordPress theme framework that's jam-packed with unnecessary extras and bloated code. That's why I created Foundation, for WordPress, which offers only the necessary essentials to get your site running, with all the jazz of responsive web-design.
-
-"The ability to simplify means to eliminate the unnecessary so that the necessary may speak." ~ Hans Hofmann, Introduction to the Bootstrap, 1993
+Candy Cane for WordPress, was built using Faoundation framework with the exceptional capabilities of [ZURB's Foundation Framework](http://foundation.zurb.com/) and [HTML5 Boilerplate](http://html5boilerplate.com/).
 
 ## Demonstration
 
 You can view Foundation, for WordPress (FWP) online at this address: [http://fwp.drewsymo.com](http://fwp.drewsymo.com)
 ## Features
 
-Foundation, for WordPress, features everything ZURB's Foundation Framework and HTML5 Boilerplate have to offer, however, some changes have been made to tailer it to WordPress, these include:
+Candy Cane features everything ZURB's Foundation Framework and HTML5 Boilerplate have to offer.
 
 * All your common WordPress template files
 * Orbit for WordPress, ZURB's image and content slider tailored for WordPress, with the ability to manage your slider through WordPress
 * A ySlow score of 99 (in regards to 'Small Site or Blog')
 * Clean, validated code
-* Two sidebars (one on the right & one on the footer)
 * A little snippet that 'hides' the address bar on the iPhone
 * An extremely awesome pagination script by @ericmartin, using Foundations pagination CSS
 * An improved viewport snippet, allowing the same scale over horizontal and portrait orientations
 
-## Download
-
-Clone the git repo - `git clone git://github.com/drewsymo/Foundation.git` - or, [download the archive](https://github.com/drewsymo/Foundation/zipball/master). 
-
-## Snippets
 
 ### Orbit, for WordPress
 
@@ -79,14 +69,10 @@ You can manage Orbit's options through app.js (don't worry, theres an options pa
 
 ## License
 
+### Candy Cane, for WordPress
+
+Candy Cane is listed under Public Domain.
+
 ### Foundation, for WordPress
 
 Foundation, for WordPress, is listed under Public Domain.
-
-### Major Components
-
-For more information about the licensing involved with Foundation, for WordPress' major components, please see:
-
-* [ZURB's Foundation Framework](http://foundation.zurb.com/) (MIT Open License)
-* [HTML5 Boilerplate](http://html5boilerplate.com/) (Public Domain)
-
