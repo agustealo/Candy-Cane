@@ -1,4 +1,4 @@
-# Foundation, for WordPress
+# CAndy Cane for WordPress
 
 Candy Cane for WordPress, was built using Faoundation framework with the exceptional capabilities of [ZURB's Foundation Framework](http://foundation.zurb.com/) and [HTML5 Boilerplate](http://html5boilerplate.com/).
 
