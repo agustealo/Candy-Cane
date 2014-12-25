@@ -57,6 +57,14 @@ You can manage Orbit's options through app.js (don't worry, theres an options pa
 
 ## Authors
 
+**Agustealo Johnson**
+
++ Agustealo is a Hybrid Designer living in New York City.
++ Follow [Agustealo on Twitter](http://www.twitter.com/agustealo)
++ Follow [Agustealo on FaceBook](https://www.facebook.com/pages/Agustealo/183441298351569?ref=hl)
++ Follow [Agustealo on Google +](https://plus.google.com/u/0/+AgustealoJohnson)
++ View [Agustealo's Website](http://www.agustealo.com)
+
 **ZURB**
 
 + Foundation was made by ZURB, an interaction design and design strategy firm in Campbell, CA.
