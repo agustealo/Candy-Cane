@@ -6,6 +6,7 @@ COMPOSE_FILE="${ROOT_DIR}/tests/docker-compose.release.yml"
 DIST_DIR="${ROOT_DIR}/dist"
 RELEASE_PORT="${CANDY_CANE_RELEASE_PORT:-8081}"
 SITE_URL="http://127.0.0.1:${RELEASE_PORT}"
+THEME_CHECK_VERSION="20260821"
 export CANDY_CANE_RELEASE_PORT="${RELEASE_PORT}"
 export COMPOSE_PROJECT_NAME="candy-cane-release-${GITHUB_RUN_ID:-local}"
 
@@ -134,6 +135,14 @@ installed_version="$(wp_cli theme get "${active_stylesheet}" --field=version)"
 core_version="$(wp_cli core version)"
 [[ "${core_version}" == '7.1.1' ]] || fail "expected WordPress 7.1.1, got ${core_version}"
 
+printf 'Running official WordPress Theme Check %s against the installed consumer ZIP...\n' "${THEME_CHECK_VERSION}"
+wp_cli plugin install theme-check --version="${THEME_CHECK_VERSION}" --activate --force >/dev/null
+theme_check_report="${DIST_DIR}/Candy-Cane-${version}-theme-check.json"
+if ! wp_cli theme-check run "${active_stylesheet}" --format=json > "${theme_check_report}"; then
+	cat "${theme_check_report}" >&2 || true
+	fail 'official WordPress Theme Check reported release-blocking errors for the consumer ZIP'
+fi
+
 printf 'Verifying packaged WordPress contracts...\n'
 wp_cli eval '
 $menus = get_registered_nav_menus();
@@ -212,4 +221,4 @@ if grep -Eiq 'PHP (Fatal error|Parse error)|Uncaught (Error|Exception)' <<<"${de
 	fail 'fatal PHP error found in packaged wp-content/debug.log'
 fi
 
-printf 'Candy Cane consumer ZIP passed: %s, WordPress %s, SHA-256 %s.\n' "${version}" "${core_version}" "${second_sha}"
+printf 'Candy Cane consumer ZIP passed: %s, WordPress %s, Theme Check %s, SHA-256 %s.\n' "${version}" "${core_version}" "${THEME_CHECK_VERSION}" "${second_sha}"
