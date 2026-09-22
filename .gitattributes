@@ -15,3 +15,15 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Consumer release archive authority. `git archive` reads these attributes, so
+# development, CI, and test-only files cannot leak into the installable theme ZIP.
+/.dockerignore export-ignore
+/.gitattributes export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/README.md export-ignore
+/composer.json export-ignore
+/phpcs.xml.dist export-ignore
+/scripts export-ignore
+/tests export-ignore

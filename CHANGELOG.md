@@ -36,6 +36,10 @@ Modernization release in progress.
 - Added 18 historical/current screenshot comparisons across six routes and desktop, tablet, and compact viewports, with pixel-diff images and JSON evidence retained by CI.
 - Tightened visual budgets to measured preservation baselines: 0.5% for ordinary surfaces, route/viewport-specific single-post limits up to 3.5%, compact 404 up to 7.5%, and 2% maximum page-height drift.
 - Added browser checks for keyboard access to image-card overlays and current-theme page errors.
+- Added canonical `git archive` packaging rules that exclude CI, tests, build scripts, Composer tooling, repository metadata, local dependencies, and other development-only files from the consumer ZIP.
+- Added deterministic `Candy-Cane-<version>.zip` and SHA-256 generation from the committed Git tree.
+- Added a clean release-package runtime that proves Candy Cane is absent before installation, installs the generated ZIP through WP-CLI, activates it, validates packaged menu/sidebar/image-size contracts, renders real content, serves packaged stylesheets, and rejects fatal PHP errors.
+- Added CI retention of the exact installable ZIP and checksum as release evidence.
 - Aligned theme, Composer, and documentation licensing on GPLv2.
 - Removed obsolete Dreamweaver synchronization metadata and an unused historical `functions-orig.php` backup.
 - Preserved the pre-modernization stylesheet byte-for-byte as `legacy-style.css` while making `style.css` the current WordPress metadata entry point.
