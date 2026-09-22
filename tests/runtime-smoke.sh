@@ -2,9 +2,11 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 COMPOSE_FILE="${SCRIPT_DIR}/docker-compose.runtime.yml"
 RUNTIME_PORT="${CANDY_CANE_RUNTIME_PORT:-8080}"
 SITE_URL="http://127.0.0.1:${RUNTIME_PORT}"
+EXPECTED_THEME_VERSION="$(sed -n 's/^Version:[[:space:]]*//p' "${ROOT_DIR}/style.css" | head -n 1 | tr -d '\r')"
 export CANDY_CANE_RUNTIME_PORT="${RUNTIME_PORT}"
 export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-candy-cane-runtime-${GITHUB_RUN_ID:-local}}"
 
@@ -47,6 +49,8 @@ assert_not_contains() {
 	fi
 }
 
+[[ -n "${EXPECTED_THEME_VERSION}" ]] || fail 'style.css does not declare a theme version'
+
 printf 'Building and starting WordPress 7.1.1 runtime...\n'
 docker compose -f "${COMPOSE_FILE}" up -d --build db wordpress
 
@@ -78,7 +82,7 @@ core_version="$(wp_cli core version)"
 [[ "${core_version}" == '7.1.1' ]] || fail "expected WordPress 7.1.1, got ${core_version}"
 
 theme_version="$(wp_cli theme get candy-cane --field=version)"
-[[ "${theme_version}" == '0.10.0' ]] || fail "expected Candy Cane 0.10.0, got ${theme_version}"
+[[ "${theme_version}" == "${EXPECTED_THEME_VERSION}" ]] || fail "expected Candy Cane ${EXPECTED_THEME_VERSION}, got ${theme_version}"
 
 printf 'Seeding deterministic WordPress content...\n'
 wp_cli term create category 'Runtime Two' --slug=runtime-two --porcelain >/dev/null
@@ -141,6 +145,10 @@ if ( ! isset( $menus["header-menu1"], $menus["header-menu2"] ) ) {
 	throw new RuntimeException( "Candy Cane menu locations are not registered." );
 }
 
+if ( ! current_theme_supports( "editor-styles" ) ) {
+	throw new RuntimeException( "Candy Cane editor-styles support is not registered." );
+}
+
 global $wp_registered_sidebars, $_wp_additional_image_sizes;
 foreach ( array( "right_sidebar", "footer_1", "footer_2", "footer_3", "footer_4" ) as $sidebar_id ) {
 	if ( ! isset( $wp_registered_sidebars[ $sidebar_id ] ) ) {
@@ -192,10 +200,12 @@ printf 'Verifying public theme assets...\n'
 style_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/candy-cane/style.css")"
 legacy_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/candy-cane/legacy-style.css")"
 modern_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/candy-cane/stylesheets/modern.css")"
-assert_contains "${style_css}" 'Version: 0.10.0' 'style.css'
+editor_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/candy-cane/stylesheets/editor.css")"
+assert_contains "${style_css}" "Version: ${EXPECTED_THEME_VERSION}" 'style.css'
 assert_contains "${style_css}" '@import url("legacy-style.css")' 'style.css legacy import'
 assert_contains "${legacy_css}" 'Foundation v2.1.3' 'legacy stylesheet'
 assert_contains "${modern_css}" 'prefers-reduced-motion' 'modern accessibility stylesheet'
+assert_contains "${editor_css}" 'Candy Cane editor content styles' 'editor stylesheet'
 
 printf 'Checking runtime logs for fatal PHP failures...\n'
 wordpress_logs="$(docker compose -f "${COMPOSE_FILE}" logs --no-color wordpress 2>&1 || true)"
