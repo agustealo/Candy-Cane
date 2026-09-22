@@ -87,3 +87,18 @@ jobs:
 
       - name: Run WordPress standards
         run: composer standards
+
+  wordpress-runtime:
+    name: WordPress 7.1.1 real runtime
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify Docker Compose
+        run: docker compose version
+
+      - name: Run real WordPress smoke
+        run: bash tests/runtime-smoke.sh
