@@ -10,6 +10,7 @@ const composeFile = path.join(root, 'tests/docker-compose.runtime.yml');
 const outputDir = path.join(root, 'tests/browser-artifacts');
 const siteUrl = process.env.CANDY_CANE_SITE_URL || `http://127.0.0.1:${process.env.CANDY_CANE_RUNTIME_PORT || '8080'}`;
 const projectName = process.env.COMPOSE_PROJECT_NAME || `candy-cane-runtime-${process.env.GITHUB_RUN_ID || 'local'}`;
+const maxHeightDrift = 0.02;
 
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
@@ -18,12 +19,16 @@ const viewports = [
 ];
 
 const routes = [
-  { name: 'home', path: '/', maxDiff: 0.08 },
-  { name: 'single', path: '/?name=visible-runtime-post', maxDiff: 0.12 },
-  { name: 'page', path: '/?pagename=candy-cane-runtime-page', maxDiff: 0.08 },
-  { name: 'category', path: '/?category_name=visible-runtime', maxDiff: 0.08 },
-  { name: 'search', path: '/?s=Visible+Runtime', maxDiff: 0.10 },
-  { name: '404', path: '/?p=999999', maxDiff: 0.12 },
+  { name: 'home', path: '/', maxDiff: { default: 0.005 } },
+  {
+    name: 'single',
+    path: '/?name=visible-runtime-post',
+    maxDiff: { default: 0.015, tablet: 0.02, compact: 0.035 },
+  },
+  { name: 'page', path: '/?pagename=candy-cane-runtime-page', maxDiff: { default: 0.005 } },
+  { name: 'category', path: '/?category_name=visible-runtime', maxDiff: { default: 0.005 } },
+  { name: 'search', path: '/?s=Visible+Runtime', maxDiff: { default: 0.005 } },
+  { name: '404', path: '/?p=999999', maxDiff: { default: 0.01, compact: 0.075 } },
 ];
 
 function wp(...args) {
@@ -102,8 +107,8 @@ function compareScreenshots(referencePath, currentPath, diffPath, maxDiff) {
     diffRatio,
     maxDiff,
     heightDrift,
-    maxHeightDrift: 0.12,
-    passed: diffRatio <= maxDiff && heightDrift <= 0.12,
+    maxHeightDrift,
+    passed: diffRatio <= maxDiff && heightDrift <= maxHeightDrift,
   };
 }
 
@@ -218,8 +223,7 @@ async function main() {
 
   for (const viewport of viewports) {
     for (const route of routes) {
-      const compactAllowance = viewport.name === 'compact' ? 0.03 : 0;
-      const maxDiff = route.maxDiff + compactAllowance;
+      const maxDiff = route.maxDiff[viewport.name] ?? route.maxDiff.default;
       const referencePath = path.join(outputDir, `legacy-${viewport.name}-${route.name}.png`);
       const currentPath = path.join(outputDir, `current-${viewport.name}-${route.name}.png`);
       const diffPath = path.join(outputDir, `diff-${viewport.name}-${route.name}.png`);
