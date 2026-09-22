@@ -1,0 +1,88 @@
+/*
+ * Candy Cane compatibility and accessibility refinements.
+ *
+ * This file intentionally overrides only legacy parsing defects and interaction
+ * states. The original visual system remains in style.css and app.css.
+ */
+
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+.screen-reader-text:focus,
+.skip-link:focus {
+	clip: auto !important;
+	clip-path: none;
+	height: auto;
+	left: 10px;
+	margin: 0;
+	padding: 10px 14px;
+	top: 10px;
+	width: auto;
+	z-index: 100000;
+	background: #fff;
+	color: #111;
+	font-size: 14px;
+	line-height: 1.2;
+	text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+#primary-content:focus {
+	outline: 0;
+}
+
+.img-cont:focus-within .mask {
+	opacity: 1;
+}
+
+.img-cont:focus-within h2,
+.img-cont:focus-within .inmeta,
+.img-cont:focus-within a.info {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.img-cont:focus-within img {
+	transform: scale(1.1, 1.1);
+}
+
+.footer {
+	padding: 10px;
+}
+
+.footer a {
+	font-size: 12px;
+	text-transform: uppercase;
+}
+
+.metamon {
+	background-image: url('../images/post-title-bg.png');
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.img-cont img,
+	.img-cont .mask,
+	.img-cont h2,
+	.img-cont .inmeta {
+		transition-duration: 0.01ms !important;
+		transition-delay: 0ms !important;
+	}
+}
