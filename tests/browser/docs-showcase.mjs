@@ -7,7 +7,9 @@ const outputDir = path.join(root, 'docs-showcase-artifacts');
 const siteUrl = process.env.CANDY_CANE_SITE_URL || `http://127.0.0.1:${process.env.CANDY_CANE_RUNTIME_PORT || '8080'}`;
 
 const captures = [
-  { name: 'desktop-home', path: '/', width: 1440, height: 1000, fullPage: true },
+  // The README hero is intentionally viewport-cropped so it presents the real
+  // home composition without CI-style dead canvas below the footer.
+  { name: 'desktop-home', path: '/', width: 1440, height: 720, fullPage: false },
   { name: 'desktop-single', path: '/?name=candy-colors-reframed', width: 1440, height: 1000, fullPage: true },
   { name: 'desktop-page', path: '/?pagename=about-candy-cane', width: 1440, height: 1000, fullPage: true },
   { name: 'tablet-home', path: '/', width: 820, height: 1180, fullPage: true },
@@ -82,7 +84,7 @@ async function main() {
     }
 
     const context = await browser.newContext({
-      viewport: { width: 1440, height: 1000 },
+      viewport: { width: 1440, height: 720 },
       deviceScaleFactor: 1,
       colorScheme: 'light',
       locale: 'en-US',
@@ -111,7 +113,7 @@ async function main() {
     if (errors.length > 0) {
       throw new Error(`keyboard-overlay emitted browser page errors: ${errors.join(' | ')}`);
     }
-    manifest.push({ file: 'desktop-keyboard-overlay.png', route: '/', viewport: '1440x1000', feature: 'keyboard image-card overlay' });
+    manifest.push({ file: 'desktop-keyboard-overlay.png', route: '/', viewport: '1440x720', feature: 'keyboard image-card overlay' });
     await context.close();
   } finally {
     await browser.close();
