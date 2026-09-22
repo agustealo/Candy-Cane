@@ -4,6 +4,7 @@
  *
  * @package Candy_Cane
  */
+
 ?>
 <div class="twelve columns">
 	<?php $postindex = 1; ?>
