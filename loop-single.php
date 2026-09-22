@@ -1,46 +1,45 @@
-<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+<?php
+/**
+ * Single-post loop template.
+ *
+ * @package Candy_Cane
+ */
 
-<div class="two columns metamon">	
+if ( have_posts() ) :
+	while ( have_posts() ) :
+		the_post();
+		?>
+		<div class="two columns metamon">
 			<h2 class="potitle"><?php the_title(); ?></h2>
-			<?php the_time('F jS, Y') ?>
+			<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+		</div>
 
-</div>
+		<div class="seven columns">
+			<article>
+				<div class="entry">
+					<?php the_content(); ?>
+				</div>
 
-<div class="seven columns">
+				<p class="postmetadata">
+					<?php esc_html_e( 'Posted in', 'candy-cane' ); ?> <?php the_category( ', ' ); ?>
+					<?php if ( has_tag() ) : ?>
+						| <?php esc_html_e( 'Tags:', 'candy-cane' ); ?> <?php the_tags( '', ', ' ); ?>
+					<?php endif; ?>
+				</p>
 
-	
-		<!-- Begin the first article -->
-		<article>
-			
-			<!-- Display the Post's Content in a div box. -->
-			<div class="entry">
-				<?php the_content(); ?>
-			</div>
-			
-			<!-- Display a comma separated list of the Post's Categories. -->
+				<div class="post-link">
+					<div class="pagination-newer"><?php previous_post_link(); ?></div>
+					<div class="pagination-older"><?php next_post_link(); ?></div>
+				</div>
+			</article>
 
-	<p class="postmetadata"><?php _e('Posted in', 'four') ?> <?php the_category(', '); ?> | Tags: <?php the_tags(', '); ?></p>
-
-    <div class="post-link">
-     <div class="pagination-newer"><?php previous_posts_link(); ?></div> 
-      <div class="pagination-older"><?php next_post_link(); ?></div>
-	</div>
-		
-		</article>
-		<!-- Closes the first article -->
-			 <?php wp_link_pages( $args ); ?>
-		<!-- Begin Comments -->
-	    <?php comments_template( '', true ); ?>
-	    <!-- End Comments -->
-	
-	<!-- Stop The Loop (but note the "else:" - see next line). -->
-	<?php endwhile; else: ?>
-	
-		<!-- The very first "if" tested to see if there were any Posts to -->
-		<!-- display.  This "else" part tells what do if there weren't any. -->
-		<div class="alert-box error"><?php _e('Sorry, the page you requested was not found', 'four') ?> </div>
-
-	<!--End the loop -->
-	<?php endif; ?>
-	
-</div>
+			<?php wp_link_pages(); ?>
+			<?php comments_template(); ?>
+		</div>
+		<?php
+	endwhile;
+else :
+	?>
+	<div class="alert-box error"><?php esc_html_e( 'Sorry, the page you requested was not found', 'candy-cane' ); ?></div>
+	<?php
+endif;

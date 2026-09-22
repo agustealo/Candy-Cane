@@ -15,6 +15,7 @@
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
+<a class="screen-reader-text skip-link" href="#primary-content"><?php esc_html_e( 'Skip to content', 'candy-cane' ); ?></a>
 
 <div class="container">
 	<div class="row">
@@ -48,4 +49,4 @@
 		</div>
 	</div>
 
-	<div class="row wrap">
+	<div class="row wrap" id="primary-content" tabindex="-1">

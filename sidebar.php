@@ -1,10 +1,13 @@
-<!-- sidebar -->
+<?php
+/**
+ * Sidebar template.
+ *
+ * @package Candy_Cane
+ */
+
+?>
 <aside class="three columns sidebar fixie">
-
 	<ul>
-		<?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Right Sidebar')) : ?>
-		<?php endif; ?>
+		<?php dynamic_sidebar( 'right_sidebar' ); ?>
 	</ul>
-
 </aside>
-<!-- sidebar -->

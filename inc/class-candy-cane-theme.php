@@ -119,6 +119,13 @@ final class Candy_Cane_Theme {
 			$version
 		);
 
+		wp_enqueue_style(
+			'candy-cane-modern',
+			get_theme_file_uri( '/stylesheets/modern.css' ),
+			array( 'candy-cane-style' ),
+			$version
+		);
+
 		wp_enqueue_script(
 			'candy-cane-foundation-compat',
 			get_template_directory_uri() . '/javascripts/foundation.js',

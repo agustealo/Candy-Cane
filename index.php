@@ -1,5 +1,10 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Primary posts index template.
+ *
+ * @package Candy_Cane
+ */
 
-<?php get_template_part( 'loop', 'index' ); ?>
-		
-<?php get_footer(); ?>
+get_header();
+get_template_part( 'loop', 'index' );
+get_footer();

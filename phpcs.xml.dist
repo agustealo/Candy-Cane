@@ -15,7 +15,16 @@
 	<file>header.php</file>
 	<file>footer.php</file>
 	<file>comments.php</file>
+	<file>404.php</file>
+	<file>archives.php</file>
+	<file>index.php</file>
+	<file>page.php</file>
+	<file>single.php</file>
+	<file>sidebar.php</file>
+	<file>searchform.php</file>
 	<file>loop-index.php</file>
+	<file>loop-page.php</file>
+	<file>loop-single.php</file>
 
 	<exclude-pattern>vendor/*</exclude-pattern>
 </ruleset>
