@@ -28,9 +28,11 @@ The repository quality gate currently validates:
 - PHP syntax on PHP 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, and 8.5
 - WordPress Coding Standards
 - PHPCompatibilityWP
-- SHA-pinned GitHub Actions
+- Candy Cane's preserved menu, sidebar, image-size, release-metadata, and legacy-style contracts
+- A fresh WordPress 7.1.1 installation with Candy Cane activated against real seeded posts, pages, categories, menus, a featured image, rendered theme routes, public assets, and PHP runtime logs
+- SHA-pinned GitHub Actions and pinned runtime container images
 
-Browser-level visual regression and full WordPress runtime validation remain release gates before a modernization release is considered consumer-ready.
+Browser-level screenshot and visual-regression proof remains the release gate before the modernization line is considered consumer-ready.
 
 ## Installation
 
@@ -58,7 +60,13 @@ Run the WordPress and PHP compatibility standards gate with:
 composer standards
 ```
 
-GitHub Actions also runs the PHP 7.4–8.5 syntax matrix on pushes and pull requests.
+Run the real WordPress runtime smoke locally with Docker Compose:
+
+```bash
+bash tests/runtime-smoke.sh
+```
+
+The runtime smoke creates an isolated WordPress installation, validates the theme against real content, and removes its Docker volumes when the test finishes.
 
 ## Architecture
 
