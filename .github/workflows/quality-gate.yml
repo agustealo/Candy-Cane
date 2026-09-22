@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - 'modernize/**'
+      - 'test/**'
   pull_request:
 
 permissions:
@@ -66,7 +67,7 @@ jobs:
           coverage: none
 
       - name: Lint PHP
-        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+        run: find . -name '*.php' -not -path './vendor/*' -not -path './tests/reference-theme/*' -print0 | xargs -0 -n1 php -l
 
   standards:
     name: WordPress coding and PHP compatibility
@@ -89,16 +90,43 @@ jobs:
         run: composer standards
 
   wordpress-runtime:
-    name: WordPress 7.1.1 real runtime
+    name: WordPress 7.1.1 runtime + visual preservation
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
-      - name: Checkout
+      - name: Checkout current Candy Cane
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Checkout historical Candy Cane reference
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: agustealo/Candy-Cane
+          ref: e3ee7c4e8c1d36751f7643117f89054695feab2b
+          path: tests/reference-theme
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24.21.0'
 
       - name: Verify Docker Compose
         run: docker compose version
 
-      - name: Run real WordPress smoke
-        run: bash tests/runtime-smoke.sh
+      - name: Install pinned browser tooling
+        run: |
+          npm install --prefix tests/browser --ignore-scripts --no-audit --no-fund
+          tests/browser/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Run real WordPress and visual preservation proof
+        run: bash tests/visual-preservation.sh
+
+      - name: Upload visual preservation evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: candy-cane-visual-preservation-${{ github.sha }}
+          path: tests/browser-artifacts/
+          if-no-files-found: warn
+          retention-days: 30
