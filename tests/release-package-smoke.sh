@@ -159,12 +159,14 @@ if ( ! $name || 460 !== $name["width"] || 345 !== $name["height"] || array( "cen
 ' >/dev/null
 
 printf 'Seeding packaged-theme content and probing rendered routes...\n'
+visible_category_id="$(wp_cli term create category 'Packaged Visible' --slug=packaged-visible --porcelain)"
 post_id="$(wp_cli post create \
 	--post_type=post \
 	--post_status=publish \
 	--post_title='Packaged Candy Cane Post' \
 	--post_content='This content is rendered from the generated consumer ZIP.' \
 	--porcelain)"
+wp_cli post term set "${post_id}" category "${visible_category_id}" --by=id >/dev/null
 
 page_id="$(wp_cli post create \
 	--post_type=page \
