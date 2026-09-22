@@ -4,6 +4,7 @@
  *
  * @package Candy_Cane
  */
+
 ?>
 	</div>
 
