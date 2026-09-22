@@ -174,6 +174,9 @@ assert_contains "${home_html}" 'Visible Runtime Post' 'home page'
 assert_not_contains "${home_html}" 'Hidden Category One' 'home page'
 assert_not_contains "${home_html}" 'Hidden Category Five' 'home page'
 assert_contains "${home_html}" 'href="#primary-content"' 'home page accessibility markup'
+assert_contains "${home_html}" 'aria-label="Secondary navigation"' 'secondary navigation landmark'
+assert_contains "${home_html}" 'aria-label="Main navigation"' 'main navigation landmark'
+assert_not_contains "${home_html}" 'id="access" role="navigation"' 'navigation wrapper'
 
 single_html="$(curl --silent --show-error --fail --location "${SITE_URL}/?p=${visible_post}")"
 assert_contains "${single_html}" 'Visible Runtime Post' 'single post'
