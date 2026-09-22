@@ -6,9 +6,13 @@ COMPOSE_FILE="${SCRIPT_DIR}/docker-compose.runtime.yml"
 RUNTIME_PORT="${CANDY_CANE_RUNTIME_PORT:-8080}"
 SITE_URL="http://127.0.0.1:${RUNTIME_PORT}"
 export CANDY_CANE_RUNTIME_PORT="${RUNTIME_PORT}"
-export COMPOSE_PROJECT_NAME="candy-cane-runtime-${GITHUB_RUN_ID:-local}"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-candy-cane-runtime-${GITHUB_RUN_ID:-local}}"
 
 cleanup() {
+	if [[ "${CANDY_CANE_KEEP_RUNTIME:-0}" == '1' ]]; then
+		return
+	fi
+
 	docker compose -f "${COMPOSE_FILE}" down -v --remove-orphans >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
@@ -116,7 +120,7 @@ page_id="$(wp_cli post create \
 	--porcelain)"
 
 attachment_id="$(wp_cli media import \
-	/var/www/html/wp-content/themes/candy-cane/images/post-title-bg.png \
+	/var/www/html/wp-content/themes/candy-cane/screenshot.png \
 	--title='Candy Cane Runtime Featured Image' \
 	--porcelain)"
 wp_cli post meta update "${visible_post}" _thumbnail_id "${attachment_id}" >/dev/null
