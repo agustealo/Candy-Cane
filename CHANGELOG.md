@@ -29,6 +29,8 @@ Modernization release in progress.
 - Replaced the PHP 5.x / WordPress 4.x Travis configuration with SHA-pinned GitHub Actions.
 - Added PHP syntax validation for PHP 7.4 through 8.5.
 - Added WordPress Coding Standards and PHPCompatibilityWP gates.
+- Added a preservation-contract gate covering release metadata and the historical menu, sidebar, image-size, and stylesheet contracts.
+- Added a real WordPress 7.1.1 + PHP 8.3 runtime smoke that performs a fresh install, activates Candy Cane, seeds real content, validates the historical category exclusions and registered contracts, renders home/single/page/archive/search/404 surfaces, checks public stylesheets, and rejects fatal PHP runtime failures.
 - Aligned theme, Composer, and documentation licensing on GPLv2.
 - Removed obsolete Dreamweaver synchronization metadata and an unused historical `functions-orig.php` backup.
 - Preserved the pre-modernization stylesheet byte-for-byte as `legacy-style.css` while making `style.css` the current WordPress metadata entry point.
