@@ -4,6 +4,7 @@
  *
  * @package Candy_Cane
  */
+
 ?>
 <aside class="three columns sidebar fixie">
 	<ul>
