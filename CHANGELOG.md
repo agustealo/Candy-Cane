@@ -2,9 +2,9 @@
 
 Candy Cane follows a preservation-first modernization policy. Compatibility work should improve WordPress, PHP, accessibility, and maintenance behavior without making existing users relearn or rebuild the theme.
 
-## 0.10.0
+## 0.10.0 - 2026-09-22
 
-Modernization release in progress.
+Preservation-first modernization release for current WordPress and PHP runtimes.
 
 ### Compatibility foundation
 
@@ -14,6 +14,7 @@ Modernization release in progress.
 - Removed external and embedded jQuery 1.7.1 copies and returned dependency ownership to WordPress.
 - Replaced `query_posts()` with the canonical main-query lifecycle while preserving Candy Cane's historical home-category exclusions.
 - Modernized document-title, body-open, comment, asset-enqueue, responsive-embed, and HTML5 integration.
+- Stopped the theme from forcibly hiding WordPress's front-end admin bar.
 
 ### Templates and accessibility
 
@@ -38,11 +39,14 @@ Modernization release in progress.
 - Added browser checks for keyboard access to image-card overlays and current-theme page errors.
 - Added canonical `git archive` packaging rules that exclude CI, tests, build scripts, Composer tooling, repository metadata, local dependencies, and other development-only files from the consumer ZIP.
 - Added deterministic `Candy-Cane-<version>.zip` and SHA-256 generation from the committed Git tree.
+- Kept the friendly mixed-case archive filename while packaging the theme under the canonical WordPress directory slug `candy-cane/`.
 - Added a clean release-package runtime that proves Candy Cane is absent before installation, installs the generated ZIP through WP-CLI, activates it, validates packaged menu/sidebar/image-size contracts, renders real content, serves packaged stylesheets, and rejects fatal PHP errors.
-- Added CI retention of the exact installable ZIP and checksum as release evidence.
+- Added the official WordPress Theme Check `20260821` suite against the exact theme installed from the generated consumer ZIP. Release-blocking Theme Check findings are now zero; remaining output is recommendation-only.
+- Added `Tested up to: 7.1`, current package metadata, and a 2014-2026 copyright notice.
+- Added CI retention of the exact installable ZIP, SHA-256 checksum, and Theme Check JSON report as release evidence.
 - Aligned theme, Composer, and documentation licensing on GPLv2.
 - Removed obsolete Dreamweaver synchronization metadata and an unused historical `functions-orig.php` backup.
-- Preserved the pre-modernization stylesheet byte-for-byte as `legacy-style.css` while making `style.css` the current WordPress metadata entry point.
+- Preserved the historical stylesheet's rendering declarations and layout behavior in `legacy-style.css`; the only release-compliance edits in that file are non-rendering comment/capitalization cleanup.
 
 ## 0.9.7
 

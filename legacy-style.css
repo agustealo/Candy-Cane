@@ -1,7 +1,7 @@
 /*
 Theme Name: Candy Cane
 Theme URI: http://www.agustealo/
-Description: A Responsive and minimal wordpress theme that is useful for creative people who want to show their work and also could be used for magazine site. This theme is highly based on Foundation css by ZURB, on Bunker Framework.
+Description: A Responsive and minimal WordPress theme that is useful for creative people who want to show their work and also could be used for magazine site. This theme is highly based on Foundation css by ZURB, on Bunker Framework.
 Author: Agustealo
 Author URI: http://www.agustealo.com
 Version: 0.9.7
@@ -13,7 +13,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 @import url("stylesheets/app.css");
 [if lt IE 9] @import url("stylesheets/ie.css");
 
-/* #General Wordpress Styles
+/* #General WordPress Styles
 ================================================== */
 
 .alignnone {
@@ -126,7 +126,7 @@ blockquote {
 		Eric Meyer's CSS Reset
 		http://meyerweb.com/eric/tools/css/reset/ 
 		v2.0 | 20110126
-   		License: none (public domain)
+  		License: none (public domain)
 	*/
 	
 	html, body, div, span, applet, object, iframe,
@@ -432,7 +432,7 @@ blockquote {
 		border: none;
 	}
 	
-  	/* Don't use native buttons on iOS */
+ 	/* Don't use native buttons on iOS */
 	input[type=submit].button { -webkit-appearance: none; }
 	
 	.button.nice { 

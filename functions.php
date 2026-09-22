@@ -13,9 +13,6 @@ require_once get_template_directory() . '/inc/class-candy-cane-theme.php';
 
 Candy_Cane_Theme::boot();
 
-// Preserve the historical choice to hide the front-end admin bar.
-show_admin_bar( false );
-
 /**
  * Remove the WordPress generator meta output.
  *

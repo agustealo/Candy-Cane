@@ -6,6 +6,8 @@ COMPOSE_FILE="${ROOT_DIR}/tests/docker-compose.release.yml"
 DIST_DIR="${ROOT_DIR}/dist"
 RELEASE_PORT="${CANDY_CANE_RELEASE_PORT:-8081}"
 SITE_URL="http://127.0.0.1:${RELEASE_PORT}"
+THEME_CHECK_VERSION="20260821"
+THEME_SLUG="candy-cane"
 export CANDY_CANE_RELEASE_PORT="${RELEASE_PORT}"
 export COMPOSE_PROJECT_NAME="candy-cane-release-${GITHUB_RUN_ID:-local}"
 
@@ -15,7 +17,7 @@ cleanup() {
 trap cleanup EXIT
 
 wp_cli() {
-	docker compose -f "${COMPOSE_FILE}" run --rm --no-deps cli "$@"
+	docker compose -f "${COMPOSE_FILE}" run --rm --no-deps -e WP_CLI_CACHE_DIR=/tmp/wp-cli-cache cli "$@"
 }
 
 fail() {
@@ -57,33 +59,33 @@ mapfile -t archive_entries < <(unzip -Z1 "${archive}")
 [[ "${#archive_entries[@]}" -gt 0 ]] || fail 'release archive is empty'
 
 for entry in "${archive_entries[@]}"; do
-	[[ "${entry}" == Candy-Cane/* || "${entry}" == 'Candy-Cane/' ]] || fail "archive entry escaped the Candy-Cane root: ${entry}"
+	[[ "${entry}" == "${THEME_SLUG}/"* || "${entry}" == "${THEME_SLUG}/" ]] || fail "archive entry escaped the ${THEME_SLUG} root: ${entry}"
 done
 
 for required in \
-	'Candy-Cane/style.css' \
-	'Candy-Cane/legacy-style.css' \
-	'Candy-Cane/functions.php' \
-	'Candy-Cane/inc/class-candy-cane-theme.php' \
-	'Candy-Cane/header.php' \
-	'Candy-Cane/footer.php' \
-	'Candy-Cane/index.php' \
-	'Candy-Cane/loop-index.php' \
-	'Candy-Cane/page.php' \
-	'Candy-Cane/single.php' \
-	'Candy-Cane/sidebar.php' \
-	'Candy-Cane/searchform.php' \
-	'Candy-Cane/404.php' \
-	'Candy-Cane/stylesheets/app.css' \
-	'Candy-Cane/stylesheets/modern.css' \
-	'Candy-Cane/javascripts/foundation.js' \
-	'Candy-Cane/javascripts/app.js' \
-	'Candy-Cane/screenshot.png' \
-	'Candy-Cane/readme.txt'; do
+	"${THEME_SLUG}/style.css" \
+	"${THEME_SLUG}/legacy-style.css" \
+	"${THEME_SLUG}/functions.php" \
+	"${THEME_SLUG}/inc/class-candy-cane-theme.php" \
+	"${THEME_SLUG}/header.php" \
+	"${THEME_SLUG}/footer.php" \
+	"${THEME_SLUG}/index.php" \
+	"${THEME_SLUG}/loop-index.php" \
+	"${THEME_SLUG}/page.php" \
+	"${THEME_SLUG}/single.php" \
+	"${THEME_SLUG}/sidebar.php" \
+	"${THEME_SLUG}/searchform.php" \
+	"${THEME_SLUG}/404.php" \
+	"${THEME_SLUG}/stylesheets/app.css" \
+	"${THEME_SLUG}/stylesheets/modern.css" \
+	"${THEME_SLUG}/javascripts/foundation.js" \
+	"${THEME_SLUG}/javascripts/app.js" \
+	"${THEME_SLUG}/screenshot.png" \
+	"${THEME_SLUG}/readme.txt"; do
 	printf '%s\n' "${archive_entries[@]}" | grep -Fxq "${required}" || fail "release archive is missing required file ${required}"
 done
 
-if printf '%s\n' "${archive_entries[@]}" | grep -Eq '^Candy-Cane/(\.github(/|$)|tests(/|$)|scripts(/|$)|vendor(/|$)|node_modules(/|$)|\.dockerignore$|\.gitattributes$|\.gitignore$|README\.md$|composer\.json$|phpcs\.xml\.dist$)'; then
+if printf '%s\n' "${archive_entries[@]}" | grep -Eq "^${THEME_SLUG}/(\.github(/|$)|tests(/|$)|scripts(/|$)|vendor(/|$)|node_modules(/|$)|\.dockerignore$|\.gitattributes$|\.gitignore$|README\.md$|composer\.json$|phpcs\.xml\.dist$)"; then
 	fail 'release archive contains repository-only development files'
 fi
 
@@ -91,11 +93,13 @@ if printf '%s\n' "${archive_entries[@]}" | grep -Eq '(^|/)_notes(/|$)|(^|/)dwsyn
 	fail 'release archive contains obsolete Dreamweaver metadata'
 fi
 
-archive_style="$(unzip -p "${archive}" 'Candy-Cane/style.css')"
+archive_style="$(unzip -p "${archive}" "${THEME_SLUG}/style.css")"
 assert_contains "${archive_style}" 'Theme Name: Candy Cane' 'packaged style.css'
 assert_contains "${archive_style}" "Version: ${version}" 'packaged style.css'
+assert_contains "${archive_style}" 'Tested up to: 7.1' 'packaged style.css'
 assert_contains "${archive_style}" 'Text Domain: candy-cane' 'packaged style.css'
 assert_contains "${archive_style}" 'License: GNU General Public License v2.0' 'packaged style.css'
+assert_contains "${archive_style}" 'Copyright: 2014-2026 Agustealo Johnson' 'packaged style.css'
 
 printf 'Starting clean WordPress runtime with no repository-mounted Candy Cane...\n'
 docker compose -f "${COMPOSE_FILE}" up -d db wordpress
@@ -118,7 +122,7 @@ wp_cli core install \
 	--admin_email='release@example.test' \
 	--skip-email >/dev/null
 
-if wp_cli theme is-installed Candy-Cane >/dev/null 2>&1; then
+if wp_cli theme is-installed "${THEME_SLUG}" >/dev/null 2>&1; then
 	fail 'Candy Cane was already installed before the consumer ZIP was installed'
 fi
 
@@ -126,13 +130,21 @@ printf 'Installing and activating the generated consumer ZIP...\n'
 wp_cli theme install "/workspace/dist/$(basename "${archive}")" --activate --force >/dev/null
 
 active_stylesheet="$(wp_cli option get stylesheet)"
-[[ "${active_stylesheet}" == 'Candy-Cane' ]] || fail "expected active stylesheet Candy-Cane, got ${active_stylesheet}"
+[[ "${active_stylesheet}" == "${THEME_SLUG}" ]] || fail "expected active stylesheet ${THEME_SLUG}, got ${active_stylesheet}"
 
 installed_version="$(wp_cli theme get "${active_stylesheet}" --field=version)"
 [[ "${installed_version}" == "${version}" ]] || fail "expected packaged theme ${version}, got ${installed_version}"
 
 core_version="$(wp_cli core version)"
 [[ "${core_version}" == '7.1.1' ]] || fail "expected WordPress 7.1.1, got ${core_version}"
+
+printf 'Running official WordPress Theme Check %s against the installed consumer ZIP...\n' "${THEME_CHECK_VERSION}"
+wp_cli plugin install theme-check --version="${THEME_CHECK_VERSION}" --activate --force >/dev/null
+theme_check_report="${DIST_DIR}/Candy-Cane-${version}-theme-check.json"
+if ! wp_cli theme-check run "${active_stylesheet}" --format=json > "${theme_check_report}"; then
+	cat "${theme_check_report}" >&2 || true
+	fail 'official WordPress Theme Check reported release-blocking errors for the consumer ZIP'
+fi
 
 printf 'Verifying packaged WordPress contracts...\n'
 wp_cli eval '
@@ -192,9 +204,9 @@ page_html="$(curl --silent --show-error --fail --location "${SITE_URL}/?page_id=
 assert_contains "${page_html}" 'Packaged Candy Cane Page' 'packaged page'
 assert_contains "${page_html}" 'This page is rendered from the generated consumer ZIP.' 'packaged page content'
 
-style_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/Candy-Cane/style.css")"
-legacy_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/Candy-Cane/legacy-style.css")"
-modern_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/Candy-Cane/stylesheets/modern.css")"
+style_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/style.css")"
+legacy_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/legacy-style.css")"
+modern_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/stylesheets/modern.css")"
 assert_contains "${style_css}" "Version: ${version}" 'packaged public style.css'
 assert_contains "${legacy_css}" 'Foundation v2.1.3' 'packaged public legacy stylesheet'
 assert_contains "${modern_css}" 'prefers-reduced-motion' 'packaged public modern stylesheet'
@@ -212,4 +224,4 @@ if grep -Eiq 'PHP (Fatal error|Parse error)|Uncaught (Error|Exception)' <<<"${de
 	fail 'fatal PHP error found in packaged wp-content/debug.log'
 fi
 
-printf 'Candy Cane consumer ZIP passed: %s, WordPress %s, SHA-256 %s.\n' "${version}" "${core_version}" "${second_sha}"
+printf 'Candy Cane consumer ZIP passed: %s, WordPress %s, Theme Check %s, SHA-256 %s.\n' "${version}" "${core_version}" "${THEME_CHECK_VERSION}" "${second_sha}"
