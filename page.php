@@ -1,7 +1,11 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Page template.
+ *
+ * @package Candy_Cane
+ */
 
-<?php get_template_part( 'loop', 'page' ); ?>
-	
-<?php get_sidebar(); ?>
-		
-<?php get_footer(); ?>
+get_header();
+get_template_part( 'loop', 'page' );
+get_sidebar();
+get_footer();
