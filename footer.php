@@ -1,47 +1,30 @@
 	</div>
-	<!-- Main Row -->
-	
-	<!-- Footer -->
+
 	<footer class="row">
-	
-	
-			<div class="row">
-			  <div class="footer clearfix">
-
-			<?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Footer 1')) : ?>
-			<?php endif; ?>
-				
-			<?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Footer 2')) : ?>
-			<?php endif; ?>
-
-			<?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Footer 3')) : ?>
-			<?php endif; ?>
-
-			<?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Footer 4')) : ?>
-			<?php endif; ?>
-
+		<div class="row">
+			<div class="footer clearfix">
+				<?php dynamic_sidebar( 'footer_1' ); ?>
+				<?php dynamic_sidebar( 'footer_2' ); ?>
+				<?php dynamic_sidebar( 'footer_3' ); ?>
+				<?php dynamic_sidebar( 'footer_4' ); ?>
 			</div>
-                        
-<div class="footdown clear">
 
-<p><?php _e('&copy; 2013 | Powered by <a href="http://www.wordpress.org">Wordpress</a> | Design by <a href="http://www.agustealo.com">Agustealo Studio</a>', 'four') ?></p>
-
-
-</div>
-                          
- </div>
-	
+			<div class="footdown clear">
+				<p>
+					<?php
+					printf(
+						/* translators: 1: WordPress URL, 2: theme author URL. */
+						wp_kses_post( __( '&copy; 2013 | Powered by <a href="%1$s">WordPress</a> | Design by <a href="%2$s">Agustealo Studio</a>', 'candy-cane' ) ),
+						esc_url( 'https://wordpress.org/' ),
+						esc_url( 'https://www.agustealo.com/' )
+					);
+					?>
+				</p>
+			</div>
+		</div>
 	</footer>
-	<!-- Footer -->
+</div>
 
-	</div>
-	<!-- container -->
-
-	<!-- Included JS Files -->	
-	<script src="<?php echo get_template_directory_uri(); ?>/javascripts/foundation.js"></script>
-	<script src="<?php echo get_template_directory_uri(); ?>/javascripts/app.js"></script>
-
-	<?php wp_footer(); ?>
-	
+<?php wp_footer(); ?>
 </body>
 </html>
