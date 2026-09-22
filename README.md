@@ -30,9 +30,12 @@ The repository quality gate currently validates:
 - PHPCompatibilityWP
 - Candy Cane's preserved menu, sidebar, image-size, release-metadata, and legacy-style contracts
 - A fresh WordPress 7.1.1 installation with Candy Cane activated against real seeded posts, pages, categories, menus, a featured image, rendered theme routes, public assets, and PHP runtime logs
+- Browser-level visual continuity against the last untouched pre-modernization Candy Cane commit across home, single, page, category, search, and 404 routes at desktop, tablet, and compact widths
+- Keyboard-focus behavior for the historical image-card overlay and rejection of current-theme browser page errors
+- Pixel-difference and page-height budgets derived from the verified preservation baseline, with screenshot and diff evidence uploaded for every browser run
 - SHA-pinned GitHub Actions and pinned runtime container images
 
-Browser-level screenshot and visual-regression proof remains the release gate before the modernization line is considered consumer-ready.
+The visual gate compares the historical and current themes against the same deterministic WordPress database and content fixture. It is designed to expose product drift without treating intentional compatibility and accessibility corrections as a license for broad visual changes.
 
 ## Installation
 
@@ -67,6 +70,8 @@ bash tests/runtime-smoke.sh
 ```
 
 The runtime smoke creates an isolated WordPress installation, validates the theme against real content, and removes its Docker volumes when the test finishes.
+
+The browser-preservation harness lives under `tests/browser/`. CI checks out the historical reference theme at the pinned pre-modernization commit, runs both themes against the same runtime fixture, and produces historical, current, and diff screenshots plus `visual-report.json`.
 
 ## Architecture
 
