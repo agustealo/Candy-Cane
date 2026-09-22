@@ -1,89 +1,87 @@
 # Candy Cane for WordPress
 
-Candy Cane for WordPress, was built using Foundation framework with the exceptional capabilities of [ZURB's Foundation Framework](http://foundation.zurb.com/) and [HTML5 Boilerplate](http://html5boilerplate.com/).
+Candy Cane is a responsive classic WordPress theme for portfolios, creative work, blogs, and magazine-style sites. It keeps the original Candy Cane layout and visual character while its WordPress integration is being modernized for current WordPress and PHP releases.
 
-## Demonstration
+This project follows a preservation-first policy: existing sites should continue to feel like Candy Cane after an update. The theme is not being converted into a block theme and does not require users to rebuild menus, widgets, posts, pages, or theme content.
 
-You can view Candy Cane for WordPress online at this address: [http://demo.agustealo.com/wordpress](http://fwp.drewsymo.com)
+## Compatibility contract
 
-You can view Foundation, for WordPress (FWP) online at this address: [http://foundationpress.olefredrik.com/](http://foundationpress.olefredrik.com/)
-## Features
+Candy Cane intentionally preserves its long-standing public theme contracts:
 
-Candy Cane features everything ZURB's Foundation Framework and HTML5 Boilerplate have to offer.
+- Classic PHP template hierarchy
+- `header-menu1` main navigation location
+- `header-menu2` secondary navigation location
+- `right_sidebar` widget area
+- `footer_1`, `footer_2`, `footer_3`, and `footer_4` widget areas
+- `front` image size at 210 × 210 with center/top cropping
+- `name_size` image size at 460 × 345 with center/top cropping
+- Existing Foundation-era grid classes and the familiar Candy Cane front-end structure
 
-* All your common WordPress template files
-* Orbit for WordPress, ZURB's image and content slider tailored for WordPress, with the ability to manage your slider through WordPress
-* A ySlow score of 99 (in regards to 'Small Site or Blog')
-* Clean, validated code
-* A little snippet that 'hides' the address bar on the iPhone
-* An extremely awesome pagination script by @ericmartin, using Foundations pagination CSS
-* An improved viewport snippet, allowing the same scale over horizontal and portrait orientations
+Modernization work is performed underneath those contracts rather than replacing them.
 
+## Current modernization baseline
 
-### Orbit, for WordPress
+The maintained code line now uses WordPress Core for theme setup, asset loading, image editing, comments, query handling, document titles, responsive embeds, and other framework responsibilities that older Candy Cane releases implemented themselves.
 
-Demonstration: [http://fwp.drewsymo.com/orbit](http://fwp.drewsymo.com/orbit)
+The repository quality gate currently validates:
 
-Orbit, for WordPress, is Foundation's awesome slider built to work in WordPress. It allows you to manage your slider images and content through the backend. Neat, right? 
+- PHP syntax on PHP 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, and 8.5
+- WordPress Coding Standards
+- PHPCompatibilityWP
+- SHA-pinned GitHub Actions
 
-Just head into your admin panel, and:
+Browser-level visual regression and full WordPress runtime validation remain release gates before a modernization release is considered consumer-ready.
 
-* Click the link named 'Orbit' in the left hand side navigation
-* Create a new post within that category
-* Click 'Featured Image' on the right hand side
-* Upload your image and click 'Set as featured image'
-* Hit publish, and you're done!
+## Installation
 
-```HTML
-<h3>Orbit, for WordPress</h3>
-	<div class="row">
-		<div class="twelve columns">
-			<div id="featured"> 
-				<?php SliderContent(); ?>
-			</div>
-		</div>
-	</div>
+1. Install the `Candy-Cane` directory in `wp-content/themes/`, or install the theme ZIP through WordPress.
+2. Activate **Candy Cane** in Appearance → Themes.
+3. Assign the existing menu locations under Appearance → Menus.
+4. Configure the right sidebar and footer widget areas as needed.
+5. Continue publishing posts and pages normally. Featured images are used by the existing Candy Cane post-grid presentation.
+
+No content migration is required when updating from an earlier Candy Cane installation.
+
+## Development
+
+Candy Cane remains a deliberately small classic theme. New framework layers should not be introduced unless they solve a concrete compatibility or maintenance problem without changing the established product experience.
+
+Install the development quality tooling with:
+
+```bash
+composer install
 ```
 
-When using Orbit, it's best to upload an image to it as the height is inherited - that, or - change the min-height of Orbit within app.css (if your only using text), like so:
+Run the WordPress and PHP compatibility standards gate with:
 
-``` 
-.orbit-wrapper {
-	min-height:400px;
-}
+```bash
+composer standards
 ```
 
-You can manage Orbit's options through app.js (don't worry, theres an options page coming shortly)
+GitHub Actions also runs the PHP 7.4–8.5 syntax matrix on pushes and pull requests.
 
-## Authors
+## Architecture
 
-**Agustealo Johnson**
+The canonical theme bootstrap lives in `inc/class-candy-cane-theme.php`. It owns WordPress setup, menus, widget areas, image sizes, asset registration, and main-query compatibility behavior.
 
-+ Agustealo is a Hybrid Designer living in New York City.
-+ Follow [Agustealo on Twitter](http://www.twitter.com/agustealo)
-+ Follow [Agustealo on FaceBook](https://www.facebook.com/pages/Agustealo/183441298351569?ref=hl)
-+ Follow [Agustealo on Google +](https://plus.google.com/u/0/+AgustealoJohnson)
-+ Blog [Agustealo's Website](http://www.agustealo.com)
-+ Dev's [Agustealo's Website](agustealo.github.io)
+Legacy public helper names that may be used by child themes are retained as compatibility adapters where practical instead of being removed abruptly.
 
-**ZURB**
+`stylesheets/modern.css` contains narrowly scoped compatibility and accessibility refinements layered on top of the historical Candy Cane styles. The original grid and visual system are intentionally not being rewritten wholesale.
 
-+ Foundation was made by ZURB, an interaction design and design strategy firm in Campbell, CA.
-+ Follow [ZURB on Twitter](http://twitter.com/#!/foundationzurb)
+## Accessibility
 
-**Drew Morris**
+Modern Candy Cane includes keyboard-visible focus states, a skip-to-content link, keyboard access to post-image overlays, unique search-field IDs, and reduced-motion handling while preserving the original visual presentation.
 
-+ Drew Morris is a freelance Website Designer currently living in Sydney, Australia.
-+ Follow [Drew on Twitter](http://www.twitter.com/drewsymo)
-+ Follow [Drew on Google +](https://plus.google.com/114153589610660530694?rel=author)
-+ View [Drew's Website](http://www.drewsymo.com)
+## Historical foundation
+
+Candy Cane originated in the Foundation-era WordPress ecosystem and includes historical CSS patterns derived from ZURB Foundation and common HTML5 Boilerplate-era practices. Those origins are retained where they remain part of Candy Cane's layout contract, while obsolete runtime behavior is progressively replaced with native WordPress functionality.
 
 ## License
 
-### Candy Cane, for WordPress
+Candy Cane is licensed under the **GNU General Public License v2.0**. See the license declaration in `style.css`.
 
-Candy Cane is listed under Public Domain.
+## Maintainer
 
-### Foundation, for WordPress
+Candy Cane is maintained by Agustealo Johnson.
 
-Foundation, for WordPress, is listed under Public Domain.
+Repository: https://github.com/agustealo/Candy-Cane
