@@ -33,9 +33,12 @@ The repository quality gate currently validates:
 - Browser-level visual continuity against the last untouched pre-modernization Candy Cane commit across home, single, page, category, search, and 404 routes at desktop, tablet, and compact widths
 - Keyboard-focus behavior for the historical image-card overlay and rejection of current-theme browser page errors
 - Pixel-difference and page-height budgets derived from the verified preservation baseline, with screenshot and diff evidence uploaded for every browser run
+- A deterministic consumer ZIP built from Git's committed tree, audited for release-only contents, installed into a clean WordPress runtime through WP-CLI, activated, rendered, and checked for packaged runtime failures
 - SHA-pinned GitHub Actions and pinned runtime container images
 
 The visual gate compares the historical and current themes against the same deterministic WordPress database and content fixture. It is designed to expose product drift without treating intentional compatibility and accessibility corrections as a license for broad visual changes.
+
+The package gate separately proves what a customer installs. It starts from an official WordPress image with no repository-mounted Candy Cane theme, installs the generated ZIP, and validates the installed package rather than the source checkout.
 
 ## Installation
 
@@ -72,6 +75,18 @@ bash tests/runtime-smoke.sh
 The runtime smoke creates an isolated WordPress installation, validates the theme against real content, and removes its Docker volumes when the test finishes.
 
 The browser-preservation harness lives under `tests/browser/`. CI checks out the historical reference theme at the pinned pre-modernization commit, runs both themes against the same runtime fixture, and produces historical, current, and diff screenshots plus `visual-report.json`.
+
+## Release packaging
+
+The consumer package is built from Git's committed tree using the export rules in `.gitattributes`. Development-only files such as CI workflows, tests, build scripts, Composer tooling, local dependencies, and repository metadata are excluded from the archive.
+
+Build the installable ZIP and SHA-256 checksum with:
+
+```bash
+bash scripts/build-release.sh
+```
+
+The output is written to `dist/Candy-Cane-<version>.zip` and `dist/Candy-Cane-<version>.zip.sha256`. CI builds the same ref twice and requires identical checksums, audits the ZIP manifest, then installs that ZIP into a clean WordPress 7.1.1 runtime before accepting the release package.
 
 ## Architecture
 
