@@ -2,11 +2,17 @@
   "name": "agustealo/candy-cane",
   "description": "Candy Cane classic WordPress theme",
   "type": "wordpress-theme",
-  "license": "GPL-2.0-or-later",
+  "license": "GPL-2.0-only",
+  "require": {
+    "php": ">=7.4"
+  },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "1.1.2",
     "phpcompatibility/phpcompatibility-wp": "2.1.8",
     "wp-coding-standards/wpcs": "3.4.1"
+  },
+  "support": {
+    "source": "https://github.com/agustealo/Candy-Cane"
   },
   "config": {
     "allow-plugins": {

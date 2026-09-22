@@ -21,23 +21,23 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 
-# OSX
-# =========================
-
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Thumbnails
 ._*
-
-# Files that might appear on external disk
 .Spotlight-V100
 .Trashes
-
-# Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Dreamweaver synchronization metadata
+_notes/
+**/_notes/
+dwsync.xml
+
+# Local development dependencies
+/vendor/

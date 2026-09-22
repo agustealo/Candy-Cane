@@ -11,6 +11,36 @@ permissions:
   contents: read
 
 jobs:
+  theme-contract:
+    name: Candy Cane preservation contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate release metadata and preserved contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          grep -q '^Theme Name: Candy Cane$' style.css
+          grep -q '^Version: 0.10.0$' style.css
+          grep -q '^Requires PHP: 7.4$' style.css
+          grep -q '^Text Domain: candy-cane$' style.css
+          grep -q '^License: GNU General Public License v2.0$' style.css
+          grep -q '"license": "GPL-2.0-only"' composer.json
+          grep -q '"php": ">=7.4"' composer.json
+
+          test -f legacy-style.css
+          test ! -f functions-orig.php
+          test -z "$(git ls-files '*dwsync.xml' '_notes/*' '*/_notes/*')"
+
+          grep -q "'header-menu1'" inc/class-candy-cane-theme.php
+          grep -q "'header-menu2'" inc/class-candy-cane-theme.php
+          grep -q "'right_sidebar'" inc/class-candy-cane-theme.php
+          grep -q "add_image_size( 'front', 210, 210" inc/class-candy-cane-theme.php
+          grep -q "add_image_size( 'name_size', 460, 345" inc/class-candy-cane-theme.php
+
   php-syntax:
     name: PHP ${{ matrix.php }} syntax
     runs-on: ubuntu-latest
