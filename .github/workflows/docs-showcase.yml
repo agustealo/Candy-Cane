@@ -35,8 +35,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: candy-cane-docs-showcase-${{ github.ref }}
-  cancel-in-progress: false
+  group: candy-cane-docs-showcase-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   capture:
