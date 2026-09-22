@@ -1,3 +1,10 @@
+<?php
+/**
+ * Posts index loop.
+ *
+ * @package Candy_Cane
+ */
+?>
 <div class="twelve columns">
 	<?php $postindex = 1; ?>
 
@@ -16,7 +23,11 @@
 
 					<div class="mask">
 						<h2>
-							<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php echo esc_attr( sprintf( __( 'Permanent Link to %s', 'candy-cane' ), get_the_title() ) ); ?>"><?php the_title(); ?></a>
+							<?php
+							/* translators: %s: post title. */
+							$permalink_title = sprintf( __( 'Permanent Link to %s', 'candy-cane' ), get_the_title() );
+							?>
+							<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php echo esc_attr( $permalink_title ); ?>"><?php the_title(); ?></a>
 						</h2>
 						<div class="inmeta"><?php echo esc_html( get_the_date( 'F jS, Y' ) ); ?></div>
 					</div>
