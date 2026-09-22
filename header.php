@@ -25,24 +25,26 @@
 			</header>
 		</div>
 
-		<div class="ten columns fixie" id="access" role="navigation" aria-label="<?php esc_attr_e( 'Primary navigation', 'candy-cane' ); ?>">
+		<div class="ten columns fixie" id="access">
 			<?php
 			wp_nav_menu(
 				array(
-					'theme_location' => 'header-menu2',
-					'menu_class'     => 'nav-bar2',
-					'depth'          => 1,
-					'container'      => 'nav',
-					'fallback_cb'    => false,
+					'theme_location'       => 'header-menu2',
+					'menu_class'           => 'nav-bar2',
+					'depth'                => 1,
+					'container'            => 'nav',
+					'container_aria_label' => __( 'Secondary navigation', 'candy-cane' ),
+					'fallback_cb'          => false,
 				)
 			);
 			wp_nav_menu(
 				array(
-					'theme_location' => 'header-menu1',
-					'menu_class'     => 'nav-bar',
-					'depth'          => 1,
-					'container'      => 'nav',
-					'fallback_cb'    => false,
+					'theme_location'       => 'header-menu1',
+					'menu_class'           => 'nav-bar',
+					'depth'                => 1,
+					'container'            => 'nav',
+					'container_aria_label' => __( 'Main navigation', 'candy-cane' ),
+					'fallback_cb'          => false,
 				)
 			);
 			?>
