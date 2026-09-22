@@ -47,3 +47,6 @@ dwsync.xml
 # Ephemeral browser preservation inputs and outputs
 /tests/reference-theme/
 /tests/browser-artifacts/
+
+# Generated consumer release artifacts
+/dist/
