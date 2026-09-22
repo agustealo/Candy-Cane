@@ -1,6 +1,6 @@
 # Candy Cane for WordPress
 
-Candy Cane is a responsive classic WordPress theme for portfolios, creative work, blogs, and magazine-style sites. It keeps the original Candy Cane layout and visual character while its WordPress integration is being modernized for current WordPress and PHP releases.
+Candy Cane is a responsive classic WordPress theme for portfolios, creative work, blogs, and magazine-style sites. It keeps the original Candy Cane layout and visual character while its WordPress integration is modernized for current WordPress and PHP releases.
 
 This project follows a preservation-first policy: existing sites should continue to feel like Candy Cane after an update. The theme is not being converted into a block theme and does not require users to rebuild menus, widgets, posts, pages, or theme content.
 
@@ -34,15 +34,16 @@ The repository quality gate currently validates:
 - Keyboard-focus behavior for the historical image-card overlay and rejection of current-theme browser page errors
 - Pixel-difference and page-height budgets derived from the verified preservation baseline, with screenshot and diff evidence uploaded for every browser run
 - A deterministic consumer ZIP built from Git's committed tree, audited for release-only contents, installed into a clean WordPress runtime through WP-CLI, activated, rendered, and checked for packaged runtime failures
+- The official WordPress Theme Check plugin against the exact theme installed from the generated consumer ZIP
 - SHA-pinned GitHub Actions and pinned runtime container images
 
 The visual gate compares the historical and current themes against the same deterministic WordPress database and content fixture. It is designed to expose product drift without treating intentional compatibility and accessibility corrections as a license for broad visual changes.
 
-The package gate separately proves what a customer installs. It starts from an official WordPress image with no repository-mounted Candy Cane theme, installs the generated ZIP, and validates the installed package rather than the source checkout.
+The package gate separately proves what a customer installs. It starts from an official WordPress image with no repository-mounted Candy Cane theme, installs the generated ZIP under the canonical `candy-cane` theme slug, runs the official Theme Check suite, and validates the installed package rather than the source checkout.
 
 ## Installation
 
-1. Install the `Candy-Cane` directory in `wp-content/themes/`, or install the theme ZIP through WordPress.
+1. Install the `candy-cane` directory in `wp-content/themes/`, or install the generated Candy Cane theme ZIP through WordPress.
 2. Activate **Candy Cane** in Appearance → Themes.
 3. Assign the existing menu locations under Appearance → Menus.
 4. Configure the right sidebar and footer widget areas as needed.
@@ -86,7 +87,9 @@ Build the installable ZIP and SHA-256 checksum with:
 bash scripts/build-release.sh
 ```
 
-The output is written to `dist/Candy-Cane-<version>.zip` and `dist/Candy-Cane-<version>.zip.sha256`. CI builds the same ref twice and requires identical checksums, audits the ZIP manifest, then installs that ZIP into a clean WordPress 7.1.1 runtime before accepting the release package.
+The output is written to `dist/Candy-Cane-<version>.zip` and `dist/Candy-Cane-<version>.zip.sha256`. The friendly archive filename remains mixed-case, while the directory inside the archive is the canonical WordPress slug `candy-cane/`.
+
+CI builds the same ref twice and requires identical checksums, audits the ZIP manifest, installs that ZIP into a clean WordPress 7.1.1 runtime, runs Theme Check against the installed package, validates Candy Cane's preserved runtime contracts, renders real content, and rejects fatal PHP runtime failures before accepting the release artifact.
 
 ## Architecture
 
@@ -106,7 +109,7 @@ Candy Cane originated in the Foundation-era WordPress ecosystem and includes his
 
 ## License
 
-Candy Cane is licensed under the **GNU General Public License v2.0**. See the license declaration in `style.css`.
+Candy Cane is Copyright 2014-2026 Agustealo Johnson and is licensed under the **GNU General Public License v2.0**. See the license declaration in `style.css`.
 
 ## Maintainer
 
