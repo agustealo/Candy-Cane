@@ -2,7 +2,7 @@
 
 This directory contains the canonical public documentation screenshots for Candy Cane.
 
-The images are **not hand-authored mockups**. They are generated from a clean WordPress runtime by `tests/docs-showcase.sh` and captured with the pinned Playwright pipeline in `tests/browser/docs-showcase.mjs`.
+The images are **not hand-authored mockups**. They are generated from a clean WordPress runtime by `tests/docs-showcase.sh` and captured with the pinned Playwright pipeline in `tests/browser/docs-showcase.mjs`. Editorial post dates and the showcase comment timestamp are fixed fixture data so the single-post captures remain reproducible instead of drifting with CI wall-clock time.
 
 ## Canonical files
 
