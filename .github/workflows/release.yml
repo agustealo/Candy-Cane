@@ -48,6 +48,7 @@ jobs:
           }
 
           version="$(jq -er '.version' .github/release.json)"
+          version_pattern="${version//./\\.}"
           channel="$(jq -er '.channel' .github/release.json)"
           publish="$(jq -er '.publish' .github/release.json)"
           theme_version="$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -n 1 | tr -d '\r')"
@@ -61,7 +62,7 @@ jobs:
             echo "release.json version ${version} does not match style.css ${theme_version}." >&2
             exit 1
           }
-          grep -Fqx "## ${version}" CHANGELOG.md || {
+          grep -Eq "^## ${version_pattern}([[:space:]]|$)" CHANGELOG.md || {
             echo "CHANGELOG.md has no ${version} release section." >&2
             exit 1
           }
@@ -135,7 +136,7 @@ jobs:
         run: |
           set -euo pipefail
           awk -v version="${VERSION}" '
-            $0 == "## " version { capture = 1; next }
+            index($0, "## " version) == 1 { capture = 1; next }
             capture && /^## / { exit }
             capture { print }
           ' CHANGELOG.md > release-notes.md
