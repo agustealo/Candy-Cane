@@ -4,6 +4,7 @@
  *
  * @package Candy_Cane
  */
+
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
