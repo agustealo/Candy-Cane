@@ -1,0 +1,215 @@
+/*
+ * Candy Cane editor content styles.
+ *
+ * Keep this stylesheet intentionally narrow. It mirrors the typography and
+ * content treatment readers see on the front end without importing Candy
+ * Cane's full Foundation-era page chrome into the WordPress editor.
+ */
+
+body {
+	background: #fff;
+	color: #555;
+	font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+a {
+	color: #333;
+	line-height: inherit;
+	text-decoration: none;
+}
+
+a:hover,
+a:focus {
+	color: #000;
+	text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #181818;
+	font-weight: inherit;
+	line-height: 1.75;
+}
+
+h1 {
+	font-size: 24px;
+	line-height: 1.2;
+	margin-bottom: 5px;
+	margin-top: 25px;
+}
+
+h2 {
+	font-size: 20px;
+	margin-bottom: 9px;
+}
+
+h3 {
+	font-size: 18px;
+	margin-bottom: 9px;
+}
+
+h4 {
+	font-size: 16px;
+	margin-bottom: 3px;
+}
+
+h5 {
+	font-size: 14px;
+	font-weight: normal;
+	margin-bottom: 3px;
+}
+
+h6 {
+	font-size: 12px;
+	font-weight: normal;
+}
+
+p {
+	line-height: 2em;
+	margin: 0 0 18px;
+}
+
+em,
+i {
+	font-style: italic;
+	line-height: inherit;
+}
+
+strong,
+b {
+	font-weight: bold;
+	line-height: inherit;
+}
+
+small {
+	font-size: 60%;
+	line-height: inherit;
+}
+
+ul,
+ol {
+	margin-bottom: 18px;
+}
+
+ul {
+	list-style: disc outside;
+	margin-left: 30px;
+}
+
+ol {
+	list-style: decimal outside;
+	margin-left: 30px;
+}
+
+li {
+	margin-bottom: 12px;
+}
+
+blockquote,
+blockquote p {
+	color: #777;
+	line-height: 20px;
+}
+
+blockquote {
+	border-left: 1px solid #ddd;
+	font-style: italic;
+	margin: 0 0 18px;
+	padding: 9px 20px 0 19px;
+}
+
+blockquote cite {
+	color: #555;
+	display: block;
+	font-size: 12px;
+}
+
+blockquote cite::before {
+	content: "\2014 \0020";
+}
+
+hr {
+	border: solid #ddd;
+	border-width: 1px 0 0;
+	clear: both;
+	height: 0;
+	margin: 12px 0 18px;
+}
+
+table {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+	border-radius: 3px;
+	border-spacing: 0;
+	margin: 0 0 18px;
+	width: 100%;
+}
+
+thead,
+tfoot {
+	background: #f5f5f5;
+}
+
+th,
+td {
+	font-size: 12px;
+	line-height: 18px;
+	padding: 9px 10px;
+	text-align: left;
+	vertical-align: top;
+}
+
+th {
+	color: #222;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+	background: #f9f9f9;
+}
+
+img {
+	height: auto;
+	max-width: 100%;
+}
+
+.alignleft {
+	float: left;
+	margin: 5px 20px 20px 0;
+}
+
+.alignright {
+	float: right;
+	margin: 5px 0 20px 20px;
+}
+
+.aligncenter {
+	display: block;
+	margin: 5px auto;
+	text-align: center;
+}
+
+.wp-caption {
+	background: #fff;
+	border: 1px solid #f0f0f0;
+	max-width: 96%;
+	padding: 5px 3px 10px;
+	text-align: center;
+}
+
+.wp-caption-text,
+.gallery-caption,
+.wp-element-caption {
+	font-size: 11px;
+	line-height: 17px;
+	margin: 0;
+	padding: 5px 4px 0;
+}

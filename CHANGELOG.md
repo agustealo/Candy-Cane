@@ -2,6 +2,22 @@
 
 Candy Cane follows a preservation-first modernization policy. Compatibility work should improve WordPress, PHP, accessibility, and maintenance behavior without making existing users relearn or rebuild the theme.
 
+## 0.10.1 - 2026-09-22
+
+Preservation-safe authoring and presentation polish.
+
+### Editor and theme presentation
+
+- Added scoped editor styles so WordPress editor content better matches Candy Cane typography and content treatment without importing the Foundation-era front-end page chrome.
+- Promoted the canonical root theme screenshot to a deterministic 1200×900 capture from a clean real WordPress runtime.
+- Extended Docs Showcase to generate and byte-verify both public documentation imagery and the WordPress `screenshot.png` theme preview.
+
+### Verification
+
+- Added release-package assertions for editor-style support and the canonical editor stylesheet.
+- Added preservation-contract proof for the editor-style integration and 1200×900 PNG theme screenshot.
+- Kept optional custom-logo, custom-header, custom-background, wide-alignment, block-pattern, and block-style expansion out of this patch so existing Candy Cane users retain the established product surface.
+
 ## 0.10.0 - 2026-09-22
 
 Preservation-first modernization release for current WordPress and PHP runtimes.

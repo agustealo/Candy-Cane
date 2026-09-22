@@ -7,6 +7,7 @@ on:
       - 'docs/MANIFEST.md'
       - 'docs/SCREENSHOTS.md'
       - 'docs/screenshots/**'
+      - 'screenshot.png'
       - 'tests/docs-showcase.sh'
       - 'tests/browser/docs-showcase.mjs'
       - 'inc/**'
@@ -22,6 +23,7 @@ on:
       - 'docs/MANIFEST.md'
       - 'docs/SCREENSHOTS.md'
       - 'docs/screenshots/**'
+      - 'screenshot.png'
       - 'tests/docs-showcase.sh'
       - 'tests/browser/docs-showcase.mjs'
       - 'inc/**'
@@ -81,12 +83,21 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p docs/screenshots
-          cp docs-showcase-artifacts/*.png docs/screenshots/
+
+          for screenshot in docs-showcase-artifacts/*.png; do
+            name="$(basename "${screenshot}")"
+            if [[ "${name}" == 'theme-screenshot.png' ]]; then
+              continue
+            fi
+            cp "${screenshot}" "docs/screenshots/${name}"
+          done
+
+          cp docs-showcase-artifacts/theme-screenshot.png screenshot.png
           cp docs-showcase-artifacts/showcase-manifest.json docs/screenshots/showcase-manifest.json
 
-          git add docs/screenshots
+          git add docs/screenshots screenshot.png
           if git diff --cached --quiet; then
-            echo 'Canonical Candy Cane documentation screenshots are already current.'
+            echo 'Canonical Candy Cane screenshots are already current.'
             exit 0
           fi
 
@@ -116,4 +127,7 @@ jobs:
             cmp "docs-showcase-artifacts/${file}" "docs/screenshots/${file}"
           done
 
-          echo 'Committed Candy Cane documentation screenshots match the deterministic showcase runtime.'
+          test -s screenshot.png
+          cmp docs-showcase-artifacts/theme-screenshot.png screenshot.png
+
+          echo 'Committed Candy Cane documentation and theme screenshots match the deterministic showcase runtime.'

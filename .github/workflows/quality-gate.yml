@@ -42,6 +42,7 @@ jobs:
           grep -q '"php": ">=7.4"' composer.json
 
           test -f legacy-style.css
+          test -s stylesheets/editor.css
           test ! -f functions-orig.php
           test -z "$(git ls-files '*dwsync.xml' '_notes/*' '*/_notes/*')"
 
@@ -50,6 +51,21 @@ jobs:
           grep -q "'right_sidebar'" inc/class-candy-cane-theme.php
           grep -q "add_image_size( 'front', 210, 210" inc/class-candy-cane-theme.php
           grep -q "add_image_size( 'name_size', 460, 345" inc/class-candy-cane-theme.php
+          grep -q "add_theme_support( 'editor-styles' )" inc/class-candy-cane-theme.php
+          grep -q "add_editor_style( 'stylesheets/editor.css' )" inc/class-candy-cane-theme.php
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+
+          screenshot = Path('screenshot.png')
+          data = screenshot.read_bytes()
+          if data[:8] != b'\x89PNG\r\n\x1a\n':
+              raise SystemExit('screenshot.png is not a valid PNG file')
+          width, height = struct.unpack('>II', data[16:24])
+          if (width, height) != (1200, 900):
+              raise SystemExit(f'screenshot.png must be 1200x900, got {width}x{height}')
+          PY
 
   php-syntax:
     name: PHP ${{ matrix.php }} syntax

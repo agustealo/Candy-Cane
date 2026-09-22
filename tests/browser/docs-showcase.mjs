@@ -13,6 +13,9 @@ const captures = [
   // The README hero is intentionally viewport-cropped so it presents the real
   // home composition without CI-style dead canvas below the footer.
   { name: 'desktop-home', path: '/', width: 1440, height: 720, fullPage: false },
+  // WordPress.org recommends a 1200x900 (4:3) theme screenshot. Generate it
+  // from the same deterministic real WordPress runtime, not a hand-built mock.
+  { name: 'theme-screenshot', path: '/', width: 1200, height: 900, fullPage: false },
   { name: 'desktop-single', path: '/?name=candy-colors-reframed', width: 1440, height: 1000, fullPage: true },
   { name: 'desktop-page', path: '/?pagename=about-candy-cane', width: 1440, height: 1000, fullPage: true },
   { name: 'tablet-home', path: '/', width: 820, height: 1180, fullPage: true },

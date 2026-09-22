@@ -78,6 +78,7 @@ for required in \
 	"${THEME_SLUG}/404.php" \
 	"${THEME_SLUG}/stylesheets/app.css" \
 	"${THEME_SLUG}/stylesheets/modern.css" \
+	"${THEME_SLUG}/stylesheets/editor.css" \
 	"${THEME_SLUG}/javascripts/foundation.js" \
 	"${THEME_SLUG}/javascripts/app.js" \
 	"${THEME_SLUG}/screenshot.png" \
@@ -146,11 +147,25 @@ if ! wp_cli theme-check run "${active_stylesheet}" --format=json > "${theme_chec
 	fail 'official WordPress Theme Check reported release-blocking errors for the consumer ZIP'
 fi
 
+if grep -Fq 'No reference to add_editor_style()' "${theme_check_report}"; then
+	cat "${theme_check_report}" >&2
+	fail 'Theme Check still reports missing editor styling'
+fi
+
+if grep -Fq 'Screenshot size should be 1200x900' "${theme_check_report}"; then
+	cat "${theme_check_report}" >&2
+	fail 'Theme Check still reports a non-canonical theme screenshot size'
+fi
+
 printf 'Verifying packaged WordPress contracts...\n'
 wp_cli eval '
 $menus = get_registered_nav_menus();
 if ( ! isset( $menus["header-menu1"], $menus["header-menu2"] ) ) {
 	throw new RuntimeException( "Candy Cane menu locations are not registered from the ZIP install." );
+}
+
+if ( ! current_theme_supports( "editor-styles" ) ) {
+	throw new RuntimeException( "Packaged editor-styles support is missing." );
 }
 
 global $wp_registered_sidebars, $_wp_additional_image_sizes;
@@ -207,9 +222,11 @@ assert_contains "${page_html}" 'This page is rendered from the generated consume
 style_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/style.css")"
 legacy_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/legacy-style.css")"
 modern_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/stylesheets/modern.css")"
+editor_css="$(curl --silent --show-error --fail "${SITE_URL}/wp-content/themes/${THEME_SLUG}/stylesheets/editor.css")"
 assert_contains "${style_css}" "Version: ${version}" 'packaged public style.css'
 assert_contains "${legacy_css}" 'Foundation v2.1.3' 'packaged public legacy stylesheet'
 assert_contains "${modern_css}" 'prefers-reduced-motion' 'packaged public modern stylesheet'
+assert_contains "${editor_css}" 'Candy Cane editor content styles' 'packaged editor stylesheet'
 
 printf 'Checking packaged runtime logs for fatal PHP failures...\n'
 wordpress_logs="$(docker compose -f "${COMPOSE_FILE}" logs --no-color wordpress 2>&1 || true)"

@@ -6,6 +6,12 @@
     "fullPage": false
   },
   {
+    "file": "theme-screenshot.png",
+    "route": "/",
+    "viewport": "1200x900",
+    "fullPage": false
+  },
+  {
     "file": "desktop-single.png",
     "route": "/?name=candy-colors-reframed",
     "viewport": "1440x1000",
