@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RELEASE_REF="${CANDY_CANE_RELEASE_REF:-HEAD}"
 OUTPUT_DIR="${1:-${ROOT_DIR}/dist}"
-THEME_DIR='Candy-Cane'
+ARCHIVE_NAME='Candy-Cane'
+THEME_SLUG='candy-cane'
 
 if ! git -C "${ROOT_DIR}" rev-parse --verify --quiet "${RELEASE_REF}^{commit}" >/dev/null; then
 	printf 'Candy Cane release ref does not resolve to a commit: %s\n' "${RELEASE_REF}" >&2
@@ -18,13 +19,13 @@ if [[ -z "${version}" || ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-
 fi
 
 mkdir -p "${OUTPUT_DIR}"
-archive="${OUTPUT_DIR}/${THEME_DIR}-${version}.zip"
+archive="${OUTPUT_DIR}/${ARCHIVE_NAME}-${version}.zip"
 checksum="${archive}.sha256"
 rm -f "${archive}" "${checksum}"
 
 git -C "${ROOT_DIR}" archive \
 	--format=zip \
-	--prefix="${THEME_DIR}/" \
+	--prefix="${THEME_SLUG}/" \
 	--output="${archive}" \
 	"${RELEASE_REF}"
 
