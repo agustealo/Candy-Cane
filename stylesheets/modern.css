@@ -77,6 +77,22 @@ textarea:focus-visible {
 	background-image: url('../images/post-title-bg.png');
 }
 
+/*
+ * The historical posts index expanded its floated image card to the 250px cap
+ * on phone layouts. Native WordPress correctly returns the preserved 210x210
+ * `front` crop, so reproduce only the old home-index presentation geometry.
+ * Archive and search cards historically retained the intrinsic 210px width.
+ */
+@media only screen and (max-width: 767px) {
+	.home .img-cont {
+		width: 250px;
+	}
+
+	.home .img-cont img {
+		width: 250px !important;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.img-cont img,
 	.img-cont .mask,

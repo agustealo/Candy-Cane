@@ -41,3 +41,9 @@ dwsync.xml
 
 # Local development dependencies
 /vendor/
+/node_modules/
+/tests/browser/node_modules/
+
+# Ephemeral browser preservation inputs and outputs
+/tests/reference-theme/
+/tests/browser-artifacts/

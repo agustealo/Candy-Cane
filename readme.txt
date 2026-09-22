@@ -23,7 +23,7 @@ Existing installations keep the established menu locations, widget areas, image-
 
 == Compatibility ==
 
-The maintained repository quality gate checks PHP syntax from PHP 7.4 through PHP 8.5, WordPress Coding Standards, and PHPCompatibilityWP.
+The maintained repository quality gate checks PHP syntax from PHP 7.4 through PHP 8.5, WordPress Coding Standards, PHPCompatibilityWP, a fresh WordPress 7.1.1 runtime, and browser-rendered visual continuity against the pre-modernization Candy Cane theme across desktop, tablet, and compact layouts.
 
 The theme intentionally remains a classic WordPress theme. It is not a Full Site Editing conversion and does not require a content migration.
 
