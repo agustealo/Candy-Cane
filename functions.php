@@ -184,7 +184,7 @@ function custom_pings( $comment, $args, $depth ) {
 				wp_kses_post( __( 'By %1$s on %2$s at %3$s', 'candy-cane' ) ),
 				wp_kses_post( get_comment_author_link( $comment ) ),
 				esc_html( get_comment_date( '', $comment ) ),
-				esc_html( get_comment_time( '', false, $comment ) )
+				esc_html( get_comment_time( '', false, true, $comment ) )
 			);
 			edit_comment_link( esc_html__( 'Edit', 'candy-cane' ), ' <span class="meta-sep">|</span> <span class="edit-link">', '</span>' );
 			?>
