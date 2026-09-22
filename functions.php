@@ -175,7 +175,6 @@ function bt_image_make_intermediate_size( $file, $width, $height, $crop = false 
  */
 function custom_pings( $comment, $args, $depth ) {
 	unset( $args, $depth );
-	$GLOBALS['comment'] = $comment;
 	?>
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
 		<div class="comment-author">
@@ -183,9 +182,9 @@ function custom_pings( $comment, $args, $depth ) {
 			printf(
 				/* translators: 1: comment author, 2: comment date, 3: comment time. */
 				wp_kses_post( __( 'By %1$s on %2$s at %3$s', 'candy-cane' ) ),
-				wp_kses_post( get_comment_author_link() ),
-				esc_html( get_comment_date() ),
-				esc_html( get_comment_time() )
+				wp_kses_post( get_comment_author_link( $comment ) ),
+				esc_html( get_comment_date( '', $comment ) ),
+				esc_html( get_comment_time( '', false, $comment ) )
 			);
 			edit_comment_link( esc_html__( 'Edit', 'candy-cane' ), ' <span class="meta-sep">|</span> <span class="edit-link">', '</span>' );
 			?>
@@ -193,7 +192,7 @@ function custom_pings( $comment, $args, $depth ) {
 		<?php if ( '0' === $comment->comment_approved ) : ?>
 			<span class="unapproved"><?php esc_html_e( 'Your trackback is awaiting moderation.', 'candy-cane' ); ?></span>
 		<?php endif; ?>
-		<div class="comment-content"><?php comment_text(); ?></div>
+		<div class="comment-content"><?php comment_text( $comment ); ?></div>
 	<?php
 }
 
