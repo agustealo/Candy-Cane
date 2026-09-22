@@ -77,6 +77,22 @@ textarea:focus-visible {
 	background-image: url('../images/post-title-bg.png');
 }
 
+/*
+ * The historical home grid's floated image card expanded to its 250px cap on
+ * phone layouts. Native WordPress image sizes correctly return the preserved
+ * 210x210 `front` crop, so explicitly reproduce the old presentation geometry
+ * at the legacy mobile breakpoint without changing the registered media size.
+ */
+@media only screen and (max-width: 767px) {
+	.img-cont {
+		width: 250px;
+	}
+
+	.img-cont img {
+		width: 250px !important;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.img-cont img,
 	.img-cont .mask,
