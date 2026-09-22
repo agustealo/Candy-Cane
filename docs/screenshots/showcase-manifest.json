@@ -1,0 +1,44 @@
+[
+  {
+    "file": "desktop-home.png",
+    "route": "/",
+    "viewport": "1440x720",
+    "fullPage": false
+  },
+  {
+    "file": "desktop-single.png",
+    "route": "/?name=candy-colors-reframed",
+    "viewport": "1440x1000",
+    "fullPage": true
+  },
+  {
+    "file": "desktop-page.png",
+    "route": "/?pagename=about-candy-cane",
+    "viewport": "1440x1000",
+    "fullPage": true
+  },
+  {
+    "file": "tablet-home.png",
+    "route": "/",
+    "viewport": "820x1180",
+    "fullPage": true
+  },
+  {
+    "file": "mobile-home.png",
+    "route": "/",
+    "viewport": "390x844",
+    "fullPage": true
+  },
+  {
+    "file": "mobile-single.png",
+    "route": "/?name=candy-colors-reframed",
+    "viewport": "390x844",
+    "fullPage": true
+  },
+  {
+    "file": "desktop-keyboard-overlay.png",
+    "route": "/",
+    "viewport": "1440x720",
+    "feature": "keyboard image-card overlay"
+  }
+]

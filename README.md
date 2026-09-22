@@ -4,6 +4,30 @@ Candy Cane is a responsive classic WordPress theme for portfolios, creative work
 
 This project follows a preservation-first policy: existing sites should continue to feel like Candy Cane after an update. The theme is not being converted into a block theme and does not require users to rebuild menus, widgets, posts, pages, or theme content.
 
+## Visual showcase
+
+![Candy Cane desktop home grid](docs/screenshots/desktop-home.png)
+
+These are **real Candy Cane browser captures from a clean WordPress showcase**, not design mockups. The deterministic fixture uses editorial posts, featured artwork, categories, menus, comments, pages and widgets so the theme is documented in a product-like state.
+
+| Editorial layout | Keyboard-accessible cards |
+| --- | --- |
+| ![Candy Cane single-post layout](docs/screenshots/desktop-single.png) | ![Candy Cane keyboard-focused image card](docs/screenshots/desktop-keyboard-overlay.png) |
+
+The full gallery includes desktop, tablet and mobile views, page/sidebar presentation and the mobile single-post experience: **[view the Candy Cane screenshot gallery](docs/SCREENSHOTS.md)**.
+
+## Theme features
+
+- Image-led portfolio and editorial home grid with the familiar Candy Cane overlay treatment
+- Classic post, page, archive, search, 404 and comments templates
+- Primary and secondary navigation locations
+- Right sidebar plus four footer widget regions
+- Responsive desktop, tablet and compact layouts
+- Featured-image sizes preserved as `front` (210 × 210) and `name_size` (460 × 345)
+- Keyboard-visible focus, skip navigation, keyboard-accessible image overlays and reduced-motion handling
+- Modern WordPress asset, image, comment, title, query and responsive-embed integration beneath the classic presentation
+- Compatibility adapters for historical public helpers used by older child themes
+
 ## Compatibility contract
 
 Candy Cane intentionally preserves its long-standing public theme contracts:
@@ -35,11 +59,14 @@ The repository quality gate currently validates:
 - Pixel-difference and page-height budgets derived from the verified preservation baseline, with screenshot and diff evidence uploaded for every browser run
 - A deterministic consumer ZIP built from Git's committed tree, audited for release-only contents, installed into a clean WordPress runtime through WP-CLI, activated, rendered, and checked for packaged runtime failures
 - The official WordPress Theme Check plugin against the exact theme installed from the generated consumer ZIP
+- A separate deterministic Docs Showcase that generates and verifies the public screenshot set from a clean WordPress runtime
 - SHA-pinned GitHub Actions and pinned runtime container images
 
 The visual gate compares the historical and current themes against the same deterministic WordPress database and content fixture. It is designed to expose product drift without treating intentional compatibility and accessibility corrections as a license for broad visual changes.
 
 The package gate separately proves what a customer installs. It starts from an official WordPress image with no repository-mounted Candy Cane theme, installs the generated ZIP under the canonical `candy-cane` theme slug, runs the official Theme Check suite, and validates the installed package rather than the source checkout.
+
+The documentation showcase is intentionally separate from regression evidence. Public-facing screenshots live under `docs/screenshots/` and are regenerated from richer editorial fixture content. The entire `docs/` tree is excluded from the customer-installable ZIP.
 
 ## Installation
 
@@ -77,9 +104,17 @@ The runtime smoke creates an isolated WordPress installation, validates the them
 
 The browser-preservation harness lives under `tests/browser/`. CI checks out the historical reference theme at the pinned pre-modernization commit, runs both themes against the same runtime fixture, and produces historical, current, and diff screenshots plus `visual-report.json`.
 
+Generate the public documentation showcase locally with:
+
+```bash
+bash tests/docs-showcase.sh
+```
+
+The showcase output is generated under `docs-showcase-artifacts/`. On same-repository pull requests, the Docs Showcase workflow synchronizes reviewed captures into `docs/screenshots/`; on `master`, it verifies the committed images still match the deterministic runtime.
+
 ## Release packaging
 
-The consumer package is built from Git's committed tree using the export rules in `.gitattributes`. Development-only files such as CI workflows, tests, build scripts, Composer tooling, local dependencies, and repository metadata are excluded from the archive.
+The consumer package is built from Git's committed tree using the export rules in `.gitattributes`. Development-only files such as CI workflows, documentation/screenshots, tests, build scripts, Composer tooling, local dependencies, and repository metadata are excluded from the archive.
 
 Build the installable ZIP and SHA-256 checksum with:
 

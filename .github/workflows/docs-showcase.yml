@@ -1,0 +1,119 @@
+name: Docs Showcase
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/docs-showcase.yml'
+      - 'docs/MANIFEST.md'
+      - 'docs/SCREENSHOTS.md'
+      - 'docs/screenshots/**'
+      - 'tests/docs-showcase.sh'
+      - 'tests/browser/docs-showcase.mjs'
+      - 'inc/**'
+      - 'stylesheets/**'
+      - 'templates/**'
+      - '*.php'
+      - '*.css'
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/docs-showcase.yml'
+      - 'docs/MANIFEST.md'
+      - 'docs/SCREENSHOTS.md'
+      - 'docs/screenshots/**'
+      - 'tests/docs-showcase.sh'
+      - 'tests/browser/docs-showcase.mjs'
+      - 'inc/**'
+      - 'stylesheets/**'
+      - 'templates/**'
+      - '*.php'
+      - '*.css'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: candy-cane-docs-showcase-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: Capture premium theme screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24.21.0'
+
+      - name: Install pinned browser tooling
+        run: |
+          npm install --prefix tests/browser --ignore-scripts --no-audit --no-fund
+          tests/browser/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Capture real WordPress showcase
+        run: bash tests/docs-showcase.sh
+
+      - name: Upload docs showcase evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: candy-cane-docs-showcase-${{ github.sha }}
+          path: docs-showcase-artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Synchronize canonical documentation screenshots
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/screenshots
+          cp docs-showcase-artifacts/*.png docs/screenshots/
+          cp docs-showcase-artifacts/showcase-manifest.json docs/screenshots/showcase-manifest.json
+
+          git add docs/screenshots
+          if git diff --cached --quiet; then
+            echo 'Canonical Candy Cane documentation screenshots are already current.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update canonical Candy Cane showcase screenshots'
+          git push origin "HEAD:${HEAD_BRANCH}"
+
+      - name: Verify committed documentation screenshots are current
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=(
+            desktop-home.png
+            desktop-single.png
+            desktop-page.png
+            tablet-home.png
+            mobile-home.png
+            mobile-single.png
+            desktop-keyboard-overlay.png
+            showcase-manifest.json
+          )
+
+          for file in "${expected[@]}"; do
+            test -s "docs/screenshots/${file}"
+            cmp "docs-showcase-artifacts/${file}" "docs/screenshots/${file}"
+          done
+
+          echo 'Committed Candy Cane documentation screenshots match the deterministic showcase runtime.'

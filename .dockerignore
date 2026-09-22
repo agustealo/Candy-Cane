@@ -3,5 +3,6 @@
 vendor
 node_modules
 .DS_Store
+docs
 tests/reference-theme
 tests/browser-artifacts
