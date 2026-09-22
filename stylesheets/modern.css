@@ -78,17 +78,17 @@ textarea:focus-visible {
 }
 
 /*
- * The historical home grid's floated image card expanded to its 250px cap on
- * phone layouts. Native WordPress image sizes correctly return the preserved
- * 210x210 `front` crop, so explicitly reproduce the old presentation geometry
- * at the legacy mobile breakpoint without changing the registered media size.
+ * The historical posts index expanded its floated image card to the 250px cap
+ * on phone layouts. Native WordPress correctly returns the preserved 210x210
+ * `front` crop, so reproduce only the old home-index presentation geometry.
+ * Archive and search cards historically retained the intrinsic 210px width.
  */
 @media only screen and (max-width: 767px) {
-	.img-cont {
+	.home .img-cont {
 		width: 250px;
 	}
 
-	.img-cont img {
+	.home .img-cont img {
 		width: 250px !important;
 	}
 }
