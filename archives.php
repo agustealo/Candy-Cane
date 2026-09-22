@@ -1,38 +1,48 @@
-<?php 
-/*
-Template Name: Archives
-*/
+<?php
+/**
+ * Template Name: Archives
+ *
+ * @package Candy_Cane
+ */
 
 get_header();
-
 ?>
-
-<!-- archives -->
 
 <div class="nine columns">
+	<?php
+	the_post();
+	?>
+	<h2 class="potitle"><?php the_title(); ?></h2>
 
-	<?php the_post(); ?>
-			<h2 class="potitle"><?php the_title(); ?></h2>
+	<?php
+	$candy_cane_archive_query = new WP_Query(
+		array(
+			'posts_per_page'      => -1,
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+		)
+	);
+	$candy_cane_post_index = 1;
 
-<?php 
-   $my_query = new WP_Query('posts_per_page=-1');
-   $postindex = 1;
-   while ($my_query->have_posts()) : $my_query->the_post();$do_not_duplicate = $post->ID;
-?>
+	while ( $candy_cane_archive_query->have_posts() ) :
+		$candy_cane_archive_query->the_post();
+		$candy_cane_archive_classes = array( 'six', 'columns', 'arkib' );
 
-<article class="six columns arkib<?php if(($postindex % 2) == 0){ echo ' fixie';}?>">
+		if ( 0 === $candy_cane_post_index % 2 ) {
+			$candy_cane_archive_classes[] = 'fixie';
+		}
+		?>
+		<article class="<?php echo esc_attr( implode( ' ', $candy_cane_archive_classes ) ); ?>">
+			<a href="<?php echo esc_url( get_permalink() ); ?>" title="<?php echo esc_attr( get_the_title() ); ?>" rel="bookmark"><?php the_title(); ?></a>
+		</article>
+		<?php
+		++$candy_cane_post_index;
+	endwhile;
 
-   <a href="<?php the_permalink() ?>" title="<?php the_title() ?>" rel="bookmark"><?php the_title() ?></a>
-
-</article>
-
-             <?php ++$postindex; ?>
-                        <?php endwhile; ?>
-
+	wp_reset_postdata();
+	?>
 </div>
 
-<?php get_sidebar(); ?>
-
-<?php get_footer(); ?>
-
-<!-- archives -->
+<?php
+get_sidebar();
+get_footer();
