@@ -1,0 +1,188 @@
+name: Publish Release
+
+on:
+  workflow_run:
+    workflows:
+      - Quality Gate
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: candy-cane-release-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish verified Candy Cane release
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      QUALITY_RUN_ID: ${{ github.event.workflow_run.id }}
+    steps:
+      - name: Checkout exact green master commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate release authority
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          [[ "$(git rev-parse HEAD)" == "${RELEASE_SHA}" ]] || {
+            echo "Checked-out commit does not match the green Quality Gate head." >&2
+            exit 1
+          }
+
+          version="$(jq -er '.version' .github/release.json)"
+          version_pattern="${version//./\\.}"
+          channel="$(jq -er '.channel' .github/release.json)"
+          publish="$(jq -er '.publish' .github/release.json)"
+          theme_version="$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -n 1 | tr -d '\r')"
+          tag="v${version}"
+
+          [[ "${channel}" == 'stable' ]] || {
+            echo "Unsupported release channel: ${channel}" >&2
+            exit 1
+          }
+          [[ "${theme_version}" == "${version}" ]] || {
+            echo "release.json version ${version} does not match style.css ${theme_version}." >&2
+            exit 1
+          }
+          grep -Eq "^## ${version_pattern}([[:space:]]|$)" CHANGELOG.md || {
+            echo "CHANGELOG.md has no ${version} release section." >&2
+            exit 1
+          }
+
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+
+          if [[ "${publish}" != 'true' ]]; then
+            echo 'publish=false' >> "${GITHUB_OUTPUT}"
+            echo "Release publication is disabled by .github/release.json."
+            exit 0
+          fi
+
+          if gh release view "${tag}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo 'publish=false' >> "${GITHUB_OUTPUT}"
+            echo "GitHub Release ${tag} already exists; publication is idempotently complete."
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "Tag ${tag} exists without a GitHub Release; refusing to overwrite or guess ownership." >&2
+            exit 1
+          fi
+
+          echo 'publish=true' >> "${GITHUB_OUTPUT}"
+
+      - name: Download exact Quality Gate release evidence
+        if: steps.release.outputs.publish == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run download "${QUALITY_RUN_ID}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name "candy-cane-release-${RELEASE_SHA}" \
+            --dir release-evidence
+
+      - name: Re-verify consumer package evidence
+        if: steps.release.outputs.publish == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          archive="release-evidence/Candy-Cane-${VERSION}.zip"
+          checksum="${archive}.sha256"
+          report="release-evidence/Candy-Cane-${VERSION}-theme-check.json"
+
+          test -f "${archive}"
+          test -f "${checksum}"
+          test -f "${report}"
+
+          (
+            cd release-evidence
+            sha256sum --check "Candy-Cane-${VERSION}.zip.sha256"
+          )
+          unzip -tqq "${archive}"
+          unzip -Z1 "${archive}" | grep -Eq '^candy-cane/'
+          if unzip -Z1 "${archive}" | grep -Eq '^Candy-Cane/'; then
+            echo 'Consumer ZIP contains the deprecated mixed-case theme directory.' >&2
+            exit 1
+          fi
+
+          jq -e '[.[] | select(.type == "REQUIRED" or .type == "WARNING")] | length == 0' "${report}" >/dev/null
+
+      - name: Build release notes from canonical changelog
+        if: steps.release.outputs.publish == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          awk -v version="${VERSION}" '
+            index($0, "## " version) == 1 { capture = 1; next }
+            capture && /^## / { exit }
+            capture { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+
+      - name: Publish immutable GitHub Release
+        if: steps.release.outputs.publish == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release create "${TAG}" \
+            "release-evidence/Candy-Cane-${VERSION}.zip#Candy Cane ${VERSION} installable theme" \
+            "release-evidence/Candy-Cane-${VERSION}.zip.sha256#SHA-256 checksum" \
+            "release-evidence/Candy-Cane-${VERSION}-theme-check.json#WordPress Theme Check report" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${RELEASE_SHA}" \
+            --title "Candy Cane ${VERSION}" \
+            --notes-file release-notes.md
+
+      - name: Verify published release points to the green commit
+        if: steps.release.outputs.publish == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          ref_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}")"
+          object_type="$(jq -r '.object.type' <<<"${ref_json}")"
+          object_sha="$(jq -r '.object.sha' <<<"${ref_json}")"
+          if [[ "${object_type}" == 'tag' ]]; then
+            object_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/${object_sha}" --jq '.object.sha')"
+          fi
+          [[ "${object_sha}" == "${RELEASE_SHA}" ]] || {
+            echo "Published tag ${TAG} points to ${object_sha}, expected ${RELEASE_SHA}." >&2
+            exit 1
+          }
+
+          gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" --json assets,isDraft,isPrerelease > release-view.json
+          jq -e '.isDraft == false and .isPrerelease == false' release-view.json >/dev/null
+          jq -e --arg zip "Candy-Cane-${VERSION}.zip" \
+            --arg sha "Candy-Cane-${VERSION}.zip.sha256" \
+            --arg report "Candy-Cane-${VERSION}-theme-check.json" \
+            '[.assets[].name] as $names | ($names | index($zip)) != null and ($names | index($sha)) != null and ($names | index($report)) != null' \
+            release-view.json >/dev/null
