@@ -2,6 +2,16 @@
 
 Candy Cane follows a preservation-first modernization policy. Compatibility work should improve WordPress, PHP, accessibility, and maintenance behavior without making existing users relearn or rebuild the theme.
 
+## 0.10.2 - 2026-09-22
+
+Preservation-safe navigation semantics.
+
+### Accessibility
+
+- Removed the redundant `role="navigation"` landmark from the shared header wrapper.
+- Added distinct accessible names to the existing Main Navigation and Secondary Navigation `<nav>` elements without changing their menu locations, depth, markup classes, layout, or visual treatment.
+- Added real WordPress runtime assertions proving both named navigation landmarks render and the old wrapper landmark does not return.
+
 ## 0.10.1 - 2026-09-22
 
 Preservation-safe authoring and presentation polish.
