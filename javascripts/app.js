@@ -1,93 +1,52 @@
-/* Foundation v2.1.3 http://foundation.zurb.com */
-$(document).ready(function () {
-
-	/* Use this js doc for all application specific JS */
-    
-    /* ORBIT */
-     $(window).load(function() {
-         $('#featured').orbit();
-     });
-    
-    /* HIDE ADDRESS BAR ON IPHONE */
-    
-    window.scrollTo(0,1);
-	
-	/* WORDPRESS NAV-BAR SUPPORT ------------- */
-	/* Adds support for the nav-bar with flyouts in WordPress */
-	
-	$('.nav-bar li').has('ul').addClass("has-flyout");
-	$('.nav-bar li ul').addClass("flyout");	
-
-	/* TABS --------------------------------- */
-	/* Remove if you don't need :) */
+/* global jQuery */
+(function ($) {
+	'use strict';
 
 	function activateTab($tab) {
-	  var $activeTab = $tab.closest('dl').find('a.active'),
-	      contentLocation = $tab.attr("href") + 'Tab';
+		var $tabs = $tab.closest('dl');
+		var contentLocation = $tab.attr('href');
 
-	  //Make Tab Active
-	  $activeTab.removeClass('active');
-	  $tab.addClass('active');
+		if (!contentLocation || contentLocation.charAt(0) !== '#') {
+			return;
+		}
 
-    //Show Tab Content
-		$(contentLocation).closest('.tabs-content').find('li').hide();
-		$(contentLocation).show();
+		$tabs.find('a.active').removeClass('active').attr('aria-selected', 'false');
+		$tab.addClass('active').attr('aria-selected', 'true');
+
+		var $target = $(contentLocation + 'Tab');
+		if (!$target.length) {
+			return;
+		}
+
+		$target.closest('.tabs-content').find('li').attr('hidden', true);
+		$target.removeAttr('hidden');
 	}
 
-	$('dl.tabs').each(function () {
-		//Get all tabs
-		var tabs = $(this).children('dd').children('a');
-		tabs.click(function (e) {
-		  activateTab($(this));
+	$(function () {
+		$('.nav-bar li').has('ul').addClass('has-flyout');
+		$('.nav-bar li ul').addClass('flyout');
+
+		$('dl.tabs').each(function () {
+			var $links = $(this).children('dd').children('a');
+			$links.attr('role', 'tab');
+			$links.on('click.candyCaneTabs', function (event) {
+				event.preventDefault();
+				activateTab($(this));
+			});
 		});
-	});
 
-	if (window.location.hash) {
-    activateTab($('a[href="' + window.location.hash + '"]'));
-  }
-
-	/* PLACEHOLDER FOR FORMS ------------- */
-	/* Remove this and jquery.placeholder.min.js if you don't need :) */
-
-	$('input, textarea').placeholder();
-
-	/* DROPDOWN NAV ------------- */
-	/*
-	$('.nav-bar li a, .nav-bar li a:after').each(function() {
-		$(this).data('clicks', 0);
-	});
-	$('.nav-bar li a, .nav-bar li a:after').bind('touchend click', function(e){
-		e.stopPropagation();
-		e.preventDefault();
-		var f = $(this).siblings('.flyout');
-		$(this).data('clicks', ($(this).data('clicks') + 1));
-		if (!f.is(':visible') && f.length > 0) {
-			$('.nav-bar li .flyout').hide();
-			f.show();
+		if (window.location.hash) {
+			var $hashTab = $('a[href="' + window.location.hash.replace(/"/g, '\\"') + '"]');
+			if ($hashTab.length) {
+				activateTab($hashTab.first());
+			}
 		}
 	});
-	$('.nav-bar li a, .nav-bar li a:after').bind(' touchend click', function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		if ($(this).data('clicks') > 1) {
-			window.location = $(this).attr('href');
+
+	$(window).on('load', function () {
+		var $featured = $('#featured');
+		if ($featured.length && $.fn.orbit) {
+			$featured.orbit();
 		}
 	});
-	$('.nav-bar').bind('touchend click', function(e) {
-		e.stopPropagation();
-		if (!$(e.target).parents('.nav-bar li .flyout') || $(e.target) != $('.nav-bar li .flyout')) {
-			e.preventDefault();
-		}
-	});
-	$('body').bind('touchend', function(e) {
-		if (!$(e.target).parents('.nav-bar li .flyout') || $(e.target) != $('.nav-bar li .flyout')) {
-			$('.nav-bar li .flyout').hide();
-		}
-	});
-	*/
-
-	/* DISABLED BUTTONS ------------- */
-	/* Gives elements with a class of 'disabled' a return: false; */
-
-
-});
+})(jQuery);
