@@ -1,3 +1,10 @@
+<?php
+/**
+ * Site footer.
+ *
+ * @package Candy_Cane
+ */
+?>
 	</div>
 
 	<footer class="row">
