@@ -1,10 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
 
 const root = path.resolve(import.meta.dirname, '../..');
+const composeFile = path.join(root, 'tests/docker-compose.runtime.yml');
 const outputDir = path.join(root, 'docs-showcase-artifacts');
 const siteUrl = process.env.CANDY_CANE_SITE_URL || `http://127.0.0.1:${process.env.CANDY_CANE_RUNTIME_PORT || '8080'}`;
+const projectName = process.env.COMPOSE_PROJECT_NAME || `candy-cane-showcase-${process.env.GITHUB_RUN_ID || 'local'}`;
 
 const captures = [
   // The README hero is intentionally viewport-cropped so it presents the real
@@ -16,6 +19,41 @@ const captures = [
   { name: 'mobile-home', path: '/', width: 390, height: 844, fullPage: true },
   { name: 'mobile-single', path: '/?name=candy-colors-reframed', width: 390, height: 844, fullPage: true },
 ];
+
+function wp(...args) {
+  return execFileSync(
+    'docker',
+    ['compose', '-f', composeFile, 'run', '--rm', '--no-deps', 'cli', ...args],
+    {
+      cwd: root,
+      env: { ...process.env, COMPOSE_PROJECT_NAME: projectName },
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  ).trim();
+}
+
+function stabilizeFixtureDates() {
+  wp(
+    'eval',
+    `
+      global $wpdb;
+      $updated = $wpdb->update(
+        $wpdb->comments,
+        array(
+          'comment_date'     => '2026-09-19 12:00:00',
+          'comment_date_gmt' => '2026-09-19 12:00:00',
+        ),
+        array( 'comment_author_email' => 'reader@example.test' ),
+        array( '%s', '%s' ),
+        array( '%s' )
+      );
+      if ( false === $updated || $updated < 1 ) {
+        throw new RuntimeException( 'Could not stabilize showcase comment date.' );
+      }
+    `,
+  );
+}
 
 async function preparePage(context, errors) {
   await context.route('**/*', async (route) => {
@@ -44,6 +82,11 @@ async function waitForStableRender(page) {
 async function main() {
   fs.rmSync(outputDir, { recursive: true, force: true });
   fs.mkdirSync(outputDir, { recursive: true });
+
+  // WordPress assigns the current time when the showcase comment is created.
+  // Freeze that database value before browser capture so the canonical single-
+  // post screenshots are reproducible byte-for-byte across CI runs.
+  stabilizeFixtureDates();
 
   const browser = await chromium.launch({ headless: true });
   const manifest = [];
