@@ -26,6 +26,7 @@ jobs:
           set -euo pipefail
 
           version="$(jq -er '.version' .github/release.json)"
+          version_pattern="${version//./\\.}"
           channel="$(jq -er '.channel' .github/release.json)"
           publish="$(jq -er '.publish' .github/release.json)"
 
@@ -33,7 +34,7 @@ jobs:
           [[ "${publish}" == 'true' || "${publish}" == 'false' ]]
           grep -q '^Theme Name: Candy Cane$' style.css
           grep -q "^Version: ${version}$" style.css
-          grep -Fqx "## ${version}" CHANGELOG.md
+          grep -Eq "^## ${version_pattern}([[:space:]]|$)" CHANGELOG.md
           grep -q '^Requires PHP: 7.4$' style.css
           grep -q '^Text Domain: candy-cane$' style.css
           grep -q '^License: GNU General Public License v2.0$' style.css
